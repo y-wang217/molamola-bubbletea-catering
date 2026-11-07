@@ -1,46 +1,57 @@
-# Mola Mola · Bubble Tea Catering
+# MolaMola · Drink Catering
 
-Website for Mola Mola's catering service. Next.js 16 (App Router) + Tailwind CSS 4.
+An interactive catering lookbook for MolaMola, built with Next.js 16 (App Router), Tailwind CSS 4 and Motion.
 
-The site follows the "guided transparency" brief from the Catering Launch Plan: customers pick
-**Pre-Order** or **Bar Setup**, answer a few light questions in the calculator, see an
-itemized **price range**, and send it to us with the estimate attached.
+## Pages
 
-## Routes
+| Route            | What's on it                                                              |
+| ---------------- | ------------------------------------------------------------------------- |
+| `/`              | Scroll-built hero cup, celebrations, catering options, Build Your Drink Bar, How It Works, pricing, gallery, Why MolaMola, FAQ, final CTA |
+| `/catering`      | Both packages in detail, timeline, drink bar builder, FAQ                 |
+| `/pricing`       | Pricing tiers, add-ons, custom-quote note                                 |
+| `/custom-drinks` | Custom drink ideas + drink bar builder                                    |
+| `/gallery`       | Scrapbook / polaroid gallery                                              |
+| `/about`         | Meet MolaMola + Why MolaMola                                              |
+| `/contact`       | Event inquiry form (validation only, no backend yet)                      |
 
-| Route           | What it is                                                     |
-| --------------- | -------------------------------------------------------------- |
-| `/`             | Home: hero, two service modes, how it works, favourites        |
-| `/how-it-works` | Process + FAQ                                                  |
-| `/pre-order`    | Pre-Order Catering details                                     |
-| `/bar-setup`    | Bar Setup Experience details                                   |
-| `/menu`         | Drinks and toppings                                            |
-| `/build`        | Estimate calculator (`?mode=pre-order` or `?mode=bar`)         |
-| `/inquire`      | Inquiry form, pre-filled with the estimate from `/build`       |
-| `/about`        | Stephanie & Charlie                                            |
+## Editing content
 
-## Where to change things
+All words, prices and lists live in `content/`. Components never hard-code repeated content.
 
-- **Prices** → `lib/pricing.ts`. Every number the calculator uses lives here. The current values
-  are **drafts**, tuned so a typical Standard bar lands around $1,000 and a Premium around $2,000.
-  Replace them when final pricing is locked.
-- **Menu** → `lib/menu.ts` (mirrors the Notion *Menu Items* database; `largeOrderPrice` feeds
-  pre-order estimates).
-- **Brand colours / fonts** → `app/globals.css` (`@theme` block) and `app/layout.tsx`.
-- **Contact details** → environment variables below.
+| File                        | Controls                                                     |
+| --------------------------- | ------------------------------------------------------------ |
+| `content/site.ts`           | Brand name, tagline, nav links, footer links, socials         |
+| `content/events.ts`         | "What Are You Celebrating?" cards                             |
+| `content/packages.ts`       | Ready-to-Serve / Full Service cards                           |
+| `content/pricing.ts`        | **All pricing**: tiers, add-ons, quote note                   |
+| `content/drinks.ts`         | Drink categories (and cup colours), toppings, customizations |
+| `content/custom-drinks.ts`  | Custom drink idea cards                                       |
+| `content/gallery.ts`        | Gallery photos, captions, tilt and drift                      |
+| `content/faq.ts`            | FAQ questions and answers                                     |
+| `content/story.ts`          | How It Works steps, Why MolaMola reasons, About Us copy       |
+| `content/inquiry.ts`        | Quote form fields and options                                 |
 
-## Environment variables
+**Adding real photos:** put images in `public/gallery/` and set `image: "/gallery/your-photo.jpg"` on the item in `content/gallery.ts`. The illustrated placeholder disappears automatically.
 
-Copy `.env.example` to `.env.local` and fill in:
+**Connecting the form:** `submitInquiry()` in `lib/validate-inquiry.ts` is the single place to send inquiries (API route, Formspree, Google Sheet, etc.).
 
-| Variable                       | Purpose                                                                 |
-| ------------------------------ | ----------------------------------------------------------------------- |
-| `INQUIRY_WEBHOOK_URL`          | Where inquiries are POSTed as JSON (Formspree, Zapier, Make, Apps Script → Google Sheet, etc.) |
-| `NEXT_PUBLIC_CONTACT_EMAIL`    | Shown in the footer and used as an email fallback if the webhook fails  |
-| `NEXT_PUBLIC_INSTAGRAM_HANDLE` | Footer link (handle without `@`)                                        |
+## Design system
 
-With no webhook configured, the form falls back to a pre-filled `mailto:` link. With neither
-set, it tells the visitor inquiries aren't connected yet, so set at least one before launch.
+- **Tokens:** colours, fonts, radii, shadows and keyframes are in the `@theme` block of `app/globals.css`.
+- **Fonts:** Bricolage Grotesque (display), Figtree (body), Caveat (handwritten notes).
+- **Art:** `components/doodles/` holds all hand-drawn SVGs: `DoodleDecoration` (stars, hearts, fruit…), `Illustration` (card spot art), `Mascot` (the sunfish) and `Cup` (the layered drink used in the hero and builder).
+
+### Reusable components
+
+`components/ui/`: `SectionHeader`, `CTAButton`, `FeatureCard`, `DrinkCard`, `CateringPackageCard`, `PricingCard`, `TimelineStep`, `GalleryCard`, `FAQAccordion`, `BinderSheet`, `Reveal`, `Parallax`, `HandUnderline`.
+
+`components/sections/`: one file per page section, composed by the route files in `app/`.
+
+## Motion & accessibility
+
+- Scroll-linked: hero cup fill + headline reveal, How It Works line drawing, gallery and doodle parallax.
+- On view: fade-up / slide-in sections, hand-drawn underlines.
+- `prefers-reduced-motion` is respected everywhere: Motion runs with `reducedMotion="user"`, scroll scenes jump to their finished state, and CSS idle animations are disabled.
 
 ## Develop
 
@@ -49,13 +60,6 @@ npm install
 npm run dev
 ```
 
-Open http://localhost:3000.
-
 ```bash
-npm run build && npm run lint
+npm run lint && npm run build
 ```
-
-## Deploy
-
-Push to GitHub and import the repo into Vercel. Add the environment variables in the Vercel
-project settings.

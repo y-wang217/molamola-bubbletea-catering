@@ -1,48 +1,117 @@
 @import "tailwindcss";
 
-/* Mola Mola brand tokens. Swap these when the extracted design tokens land. */
+/* ───────────── MolaMola design tokens ───────────── */
 @theme {
-  --color-ink: #0e2a3a; /* deep ocean */
-  --color-sea: #1f6f86; /* open water */
-  --color-sea-soft: #d6ecef;
-  --color-foam: #faf6ef; /* milk foam / page */
-  --color-sand: #f1e7d6;
-  --color-pearl: #4a2f22; /* tapioca */
-  --color-coral: #e9785b; /* accent / CTA */
-  --color-coral-dark: #cf5f43;
-  --color-taro: #b7a2d8;
-  --color-mango: #f4b740;
-  --color-line: #e3d8c6;
+  /* base */
+  --color-cream: #fbf5ea;
+  --color-paper: #fffaf0;
+  --color-ink: #3a2c26; /* dark cocoa: text + hand-drawn outlines */
+  --color-cocoa: #7b675c; /* muted text */
+  --color-line: #e9dccb;
 
-  --font-sans: var(--font-dmsans), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
+  /* pastels */
+  --color-powder: #bcd7ec;
+  --color-powder-soft: #e3eef7;
+  --color-blush: #f7c8d2;
+  --color-blush-soft: #fbe6ea;
+  --color-butter: #fbe49c;
+  --color-butter-soft: #fdf2cc;
+  --color-sage: #c8d9b4;
+  --color-sage-soft: #e6eedc;
 
-  --radius-blob: 2rem;
+  /* accent (used sparingly) */
+  --color-tangerine: #f39a5d;
+  --color-tangerine-deep: #e5824a;
+
+  --font-sans: var(--font-figtree), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  --font-hand: var(--font-caveat), "Comic Sans MS", cursive;
+
+  --radius-sheet: 2.25rem;
+  --radius-card: 1.75rem;
+
+  --shadow-sticker: 3px 3px 0 0 var(--color-ink);
+  --shadow-sticker-lg: 5px 5px 0 0 var(--color-ink);
+  --shadow-soft: 0 18px 40px -24px rgb(58 44 38 / 0.35);
+
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-bob: bob 2.8s ease-in-out infinite;
+  --animate-twinkle: twinkle 3.2s ease-in-out infinite;
+  --animate-wiggle: wiggle 0.6s ease-in-out;
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotate(-2deg); }
+    50% { transform: translateY(-12px) rotate(2deg); }
+  }
+  @keyframes bob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+  }
+  @keyframes twinkle {
+    0%, 100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    50% { transform: scale(0.82) rotate(12deg); opacity: 0.7; }
+  }
+  @keyframes wiggle {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-8deg); }
+    75% { transform: rotate(8deg); }
+  }
+}
+
+/* Respect reduced motion: kill decorative CSS animation everywhere. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+
+html,
+body {
+  overflow-x: clip; /* decorative overhangs + slide-ins never cause sideways scroll */
 }
 
 html {
-  scroll-behavior: smooth;
+  scroll-padding-top: 6rem;
 }
 
 body {
-  background: var(--color-foam);
+  background-color: var(--color-cream);
   color: var(--color-ink);
+  /* subtle paper grain */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .23 0 0 0 0 .17 0 0 0 0 .15 0 0 0 .05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 ::selection {
-  background: var(--color-taro);
+  background: var(--color-blush);
   color: var(--color-ink);
 }
 
-.bubbles {
-  background-image:
-    radial-gradient(circle at 12% 20%, rgb(255 255 255 / 0.18) 0 10px, transparent 11px),
-    radial-gradient(circle at 78% 30%, rgb(255 255 255 / 0.14) 0 6px, transparent 7px),
-    radial-gradient(circle at 62% 78%, rgb(255 255 255 / 0.12) 0 14px, transparent 15px),
-    radial-gradient(circle at 30% 70%, rgb(255 255 255 / 0.1) 0 5px, transparent 6px),
-    radial-gradient(circle at 90% 85%, rgb(255 255 255 / 0.12) 0 8px, transparent 9px);
+:focus-visible {
+  outline: 2.5px dashed var(--color-ink);
+  outline-offset: 3px;
 }
 
-input[type="range"] {
-  accent-color: var(--color-coral);
+/* Dotted notebook paper, used on a few "binder sheets". */
+.dot-grid {
+  background-image: radial-gradient(rgb(58 44 38 / 0.13) 1.1px, transparent 1.2px);
+  background-size: 22px 22px;
 }
+
+/* Washi tape strip for polaroids. */
+.tape {
+  background-image: repeating-linear-gradient(-45deg, rgb(255 255 255 / 0.35) 0 6px, transparent 6px 12px);
+}
+
+.text-balance { text-wrap: balance; }
+.text-pretty { text-wrap: pretty; }
+
+/* Hide scrollbar on snap carousels while keeping them scrollable. */
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }

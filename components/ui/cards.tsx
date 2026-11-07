@@ -1,0 +1,175 @@
+import type { ReactNode } from "react";
+import type { CateringPackage } from "@/content/packages";
+import type { PricingTier } from "@/content/pricing";
+import { Illustration, type IllustrationKind } from "@/components/doodles/illustrations";
+import { DoodleDecoration } from "@/components/doodles/doodle";
+import { toneBg, toneSoftBg, type Tone } from "@/lib/tones";
+import { CTAButton } from "./cta-button";
+
+const lift =
+  "transition-[transform,box-shadow] duration-300 ease-out hover:-translate-y-1.5 hover:shadow-[var(--shadow-soft)] motion-safe:hover:rotate-[-0.6deg]";
+
+/** Big illustrated card: celebrations, custom drink ideas, reasons. */
+export function FeatureCard({
+  title,
+  body,
+  illustration,
+  tone,
+  footer,
+  size = "md",
+  className = "",
+}: {
+  title: string;
+  body: string;
+  illustration: IllustrationKind;
+  tone: Tone;
+  footer?: ReactNode;
+  size?: "md" | "lg";
+  className?: string;
+}) {
+  return (
+    <article className={`group relative flex h-full flex-col overflow-hidden rounded-[var(--radius-card)] border-[1.5px] border-ink ${toneBg[tone]} p-6 sm:p-7 ${lift} ${className}`}>
+      <DoodleDecoration
+        kind="sparkle"
+        className="absolute top-5 right-5 h-5 w-5 opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-hover:animate-twinkle"
+      />
+      <div className={`${size === "lg" ? "h-36 w-36 sm:h-44 sm:w-44" : "h-24 w-24"} origin-bottom group-hover:animate-wiggle`}>
+        <Illustration kind={illustration} className="h-full w-full" />
+      </div>
+      <h3 className={`mt-auto pt-6 font-display font-extrabold tracking-[-0.02em] ${size === "lg" ? "text-3xl" : "text-2xl"}`}>{title}</h3>
+      <p className="mt-2 max-w-sm text-[15px] leading-relaxed text-ink/75">{body}</p>
+      {footer}
+    </article>
+  );
+}
+
+/** Small illustrated drink card (Build Your Drink Bar, step 01). */
+export function DrinkCard({
+  name,
+  example,
+  liquid,
+  tone,
+  selected,
+  onSelect,
+}: {
+  name: string;
+  example: string;
+  liquid: string;
+  tone: Tone;
+  selected?: boolean;
+  onSelect?: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onSelect}
+      aria-pressed={selected}
+      className={`group flex w-full items-center gap-3 rounded-2xl border-[1.5px] p-3 pr-4 text-left transition duration-200 ${
+        selected ? `border-ink ${toneBg[tone]} shadow-[var(--shadow-sticker)]` : `border-ink/15 bg-paper hover:border-ink/50`
+      }`}
+    >
+      <svg viewBox="0 0 40 52" aria-hidden className="h-12 w-10 shrink-0 transition-transform group-hover:-rotate-6">
+        <path d="M23 2 l-2 14" stroke="#3a2c26" strokeWidth="5" strokeLinecap="round" />
+        <path d="M23 2 l-2 14" stroke="#f7c8d2" strokeWidth="2.6" strokeLinecap="round" />
+        <path d="M6 14 h28 l-3.6 32 q-.4 3 -3.4 3 h-14 q-3 0 -3.4 -3 Z" fill={liquid} />
+        <path d="M6 14 h28 l-1 9 h-26 Z" fill="#fffaf0" opacity=".7" />
+        <path d="M6 14 h28 l-3.6 32 q-.4 3 -3.4 3 h-14 q-3 0 -3.4 -3 Z" fill="none" stroke="#3a2c26" strokeWidth="2" strokeLinejoin="round" />
+        <rect x="4" y="11" width="32" height="5" rx="2.5" fill="#fffaf0" stroke="#3a2c26" strokeWidth="2" />
+      </svg>
+      <span>
+        <span className="block font-display text-[17px] font-bold tracking-[-0.01em]">{name}</span>
+        <span className="block text-[13px] text-cocoa">{example}</span>
+      </span>
+    </button>
+  );
+}
+
+/** Ready-to-Serve / Full Service card. `detailed` adds the details table (Catering page). */
+export function CateringPackageCard({ pkg, detailed = false }: { pkg: CateringPackage; detailed?: boolean }) {
+  return (
+    <article
+      id={detailed ? pkg.id : undefined}
+      className={`group relative grid h-full scroll-mt-28 overflow-hidden rounded-[var(--radius-sheet)] border-[1.5px] border-ink ${toneSoftBg[pkg.tone]} ${detailed ? "lg:grid-cols-[1fr_1.1fr]" : ""}`}
+    >
+      <div className={`relative flex items-center justify-center ${toneBg[pkg.tone]} dot-grid px-8 pt-10 pb-6 ${detailed ? "lg:py-16" : ""}`}>
+        <span className="absolute top-5 left-5 rounded-full border-[1.5px] border-ink bg-paper px-3 py-1 font-hand text-lg leading-none">{pkg.kicker}</span>
+        <Illustration kind={pkg.illustration} className="h-44 w-44 transition-transform duration-500 group-hover:-rotate-3 group-hover:scale-105 sm:h-56 sm:w-56" />
+      </div>
+      <div className="flex flex-col p-7 sm:p-9">
+        <h3 className="font-display text-3xl font-extrabold tracking-[-0.03em] sm:text-4xl">{pkg.name}</h3>
+        <p className="mt-3 max-w-md text-[16px] leading-relaxed text-ink/75">{pkg.description}</p>
+        <ul className="mt-6 grid gap-2.5 sm:grid-cols-2">
+          {pkg.features.map((f) => (
+            <li key={f} className="flex items-start gap-2.5 text-[15px]">
+              <DoodleDecoration kind="star" className="mt-0.5 h-4 w-4 shrink-0" />
+              {f}
+            </li>
+          ))}
+        </ul>
+        {detailed && (
+          <dl className="mt-8 divide-y divide-dashed divide-ink/20 border-y border-dashed border-ink/20 text-[15px]">
+            {pkg.details.map((d) => (
+              <div key={d.label} className="flex flex-wrap justify-between gap-x-6 gap-y-1 py-3">
+                <dt className="text-cocoa">{d.label}</dt>
+                <dd className="font-semibold">{d.value}</dd>
+              </div>
+            ))}
+          </dl>
+        )}
+        <div className="mt-auto pt-8">
+          <CTAButton href={detailed ? "/contact" : pkg.cta.href} variant={detailed ? "primary" : "secondary"} arrow>
+            {detailed ? "Get a Quote" : pkg.cta.label}
+          </CTAButton>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+export function PricingCard({ tier, compact = false }: { tier: PricingTier; compact?: boolean }) {
+  return (
+    <article
+      className={`relative flex h-full flex-col rounded-[var(--radius-card)] border-[1.5px] border-ink ${toneBg[tier.tone]} p-5 sm:p-6 ${lift} ${
+        tier.featured ? "shadow-[var(--shadow-sticker-lg)]" : ""
+      }`}
+    >
+      {tier.featured && (
+        <span className="absolute -top-4 right-5 rotate-3 rounded-full border-[1.5px] border-ink bg-paper px-3 py-0.5 font-hand text-lg">most booked!</span>
+      )}
+      <p className="text-xs font-bold tracking-[0.16em] uppercase">{tier.name}</p>
+      <p className="mt-1 text-[14px] text-ink/70">{tier.guests}</p>
+      <div className={compact ? "mt-auto pt-6" : "pt-5"}>
+        <div className="border-t-[1.5px] border-dashed border-ink/30 pt-5">
+          <p className="font-hand text-xl leading-none text-ink/70">{tier.priceNote}</p>
+          <p className="font-display text-4xl font-extrabold tracking-[-0.04em] sm:text-5xl">{tier.price}</p>
+        </div>
+      </div>
+      {!compact && (
+        <ul className="mt-6 space-y-2 text-[14px]">
+          {tier.includes.map((i) => (
+            <li key={i} className="flex gap-2">
+              <span aria-hidden>✶</span>
+              {i}
+            </li>
+          ))}
+        </ul>
+      )}
+    </article>
+  );
+}
+
+/** One step of "How It Works". */
+export function TimelineStep({ n, title, body, illustration, tone }: { n: string; title: string; body: string; illustration: IllustrationKind; tone: Tone }) {
+  return (
+    <div className="group relative flex gap-5 lg:flex-col lg:items-center lg:text-center">
+      <div className={`relative z-10 flex h-24 w-24 shrink-0 items-center justify-center rounded-full border-[1.5px] border-ink ${toneBg[tone]} transition-transform duration-300 group-hover:-rotate-6 lg:h-32 lg:w-32`}>
+        <Illustration kind={illustration} className="h-16 w-16 lg:h-20 lg:w-20" />
+        <span className="absolute -top-2 -right-2 flex h-9 w-9 items-center justify-center rounded-full border-[1.5px] border-ink bg-paper font-display text-sm font-extrabold">{n}</span>
+      </div>
+      <div className="pt-2 lg:pt-4">
+        <h3 className="font-display text-xl font-extrabold tracking-[-0.02em] lg:text-2xl">{title}</h3>
+        <p className="mt-1.5 max-w-xs text-[15px] leading-relaxed text-cocoa lg:mx-auto">{body}</p>
+      </div>
+    </div>
+  );
+}
