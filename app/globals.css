@@ -1,0 +1,48 @@
+@import "tailwindcss";
+
+/* Mola Mola brand tokens. Swap these when the extracted design tokens land. */
+@theme {
+  --color-ink: #0e2a3a; /* deep ocean */
+  --color-sea: #1f6f86; /* open water */
+  --color-sea-soft: #d6ecef;
+  --color-foam: #faf6ef; /* milk foam / page */
+  --color-sand: #f1e7d6;
+  --color-pearl: #4a2f22; /* tapioca */
+  --color-coral: #e9785b; /* accent / CTA */
+  --color-coral-dark: #cf5f43;
+  --color-taro: #b7a2d8;
+  --color-mango: #f4b740;
+  --color-line: #e3d8c6;
+
+  --font-sans: var(--font-dmsans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
+
+  --radius-blob: 2rem;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-foam);
+  color: var(--color-ink);
+}
+
+::selection {
+  background: var(--color-taro);
+  color: var(--color-ink);
+}
+
+.bubbles {
+  background-image:
+    radial-gradient(circle at 12% 20%, rgb(255 255 255 / 0.18) 0 10px, transparent 11px),
+    radial-gradient(circle at 78% 30%, rgb(255 255 255 / 0.14) 0 6px, transparent 7px),
+    radial-gradient(circle at 62% 78%, rgb(255 255 255 / 0.12) 0 14px, transparent 15px),
+    radial-gradient(circle at 30% 70%, rgb(255 255 255 / 0.1) 0 5px, transparent 6px),
+    radial-gradient(circle at 90% 85%, rgb(255 255 255 / 0.12) 0 8px, transparent 9px);
+}
+
+input[type="range"] {
+  accent-color: var(--color-coral);
+}
