@@ -45,3 +45,16 @@ export const cateringPackages: CateringPackage[] = [
     tone: "pink",
   },
 ];
+
+/** Side-by-side comparison on the Catering page. */
+export const serviceComparison: { feature: string; readyToServe: string | boolean; fullService: string | boolean }[] = [
+  { feature: "Drinks made fresh for your event", readyToServe: true, fullService: true },
+  { feature: "Custom drink options", readyToServe: true, fullService: true },
+  { feature: "Custom cup stickers", readyToServe: true, fullService: true },
+  { feature: "Delivery or pickup", readyToServe: true, fullService: "We come to you" },
+  { feature: "On-site bar setup", readyToServe: false, fullService: true },
+  { feature: "Drinks made to order", readyToServe: false, fullService: true },
+  { feature: "Staff service", readyToServe: false, fullService: true },
+  { feature: "Event styling + menu sign", readyToServe: false, fullService: true },
+  { feature: "Minimum", readyToServe: "XX cups", fullService: "XX guests" },
+];

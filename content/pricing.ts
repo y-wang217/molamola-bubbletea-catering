@@ -1,5 +1,7 @@
 // ─────────────────────────────────────────────────────────────
 // All pricing lives here. Update numbers in this file only.
+// The homepage teaser reads from these same tiers, so prices
+// never need updating in two places.
 // Everything below is placeholder until final pricing is set.
 // ─────────────────────────────────────────────────────────────
 import type { Tone } from "@/lib/tones";
@@ -10,6 +12,7 @@ export type PricingTier = {
   guests: string;
   price: string;
   priceNote: string;
+  blurb: string;
   includes: string[];
   tone: Tone;
   featured?: boolean;
@@ -22,7 +25,8 @@ export const pricingTiers: PricingTier[] = [
     guests: "Min. XX cups",
     price: "$XX",
     priceNote: "starting from",
-    includes: ["Choice of X drinks", "Sealed, labelled cups", "Delivery or pickup"],
+    blurb: "Drop-off drinks, sealed and labelled.",
+    includes: ["Choice of X drinks", "Sealed, labelled cups", "Delivery or pickup", "Straws + napkins"],
     tone: "blue",
   },
   {
@@ -31,7 +35,8 @@ export const pricingTiers: PricingTier[] = [
     guests: "Up to XX guests",
     price: "$XXX",
     priceNote: "starting from",
-    includes: ["Full drink bar", "X hours of service", "X drinks + X toppings"],
+    blurb: "A cozy drink bar for intimate parties.",
+    includes: ["Full drink bar setup", "X hours of service", "X drinks + X toppings", "1 bartender"],
     tone: "butter",
   },
   {
@@ -40,7 +45,8 @@ export const pricingTiers: PricingTier[] = [
     guests: "XX–XX guests",
     price: "$XXX",
     priceNote: "starting from",
-    includes: ["Full drink bar", "X hours of service", "X drinks + X toppings", "Printed menu"],
+    blurb: "Our most popular setup for weddings and parties.",
+    includes: ["Full drink bar setup", "X hours of service", "X drinks + X toppings", "Printed menu", "2 bartenders"],
     tone: "pink",
     featured: true,
   },
@@ -50,19 +56,54 @@ export const pricingTiers: PricingTier[] = [
     guests: "100+ guests",
     price: "$XXX",
     priceNote: "starting from",
-    includes: ["Full drink bar + extra staff", "X hours of service", "Custom menu + styling"],
+    blurb: "Multiple stations so the line keeps moving.",
+    includes: ["Full drink bar + extra station", "X hours of service", "Custom menu + styling", "3+ bartenders"],
     tone: "sage",
   },
 ];
 
-export const pricingAddOns: { label: string; price: string }[] = [
-  { label: "Additional service hours", price: "$XX / hr" },
-  { label: "Delivery", price: "$XX" },
-  { label: "Travel distance (beyond XX km)", price: "$X / km" },
-  { label: "Custom drink development", price: "$XX" },
-  { label: "Custom stickers / branding", price: "$XX" },
-  { label: "Extra toppings", price: "$X / guest" },
-  { label: "Additional staff", price: "$XX / hr" },
+/** Homepage teaser: points at tiers above instead of repeating numbers. */
+export const pricingTeaser: { label: string; tierId?: string; fallback?: string; note: string }[] = [
+  { label: "Ready-to-Serve", tierId: "ready-to-serve", note: "drop-off cups" },
+  { label: "Full Service", tierId: "small", note: "live drink bar" },
+  { label: "Custom Packages", fallback: "Let's talk", note: "built around you" },
+];
+
+/** What every Full Service drink bar comes with. */
+export const fullServiceIncludes: string[] = [
+  "Setup and teardown",
+  "Drinks made fresh to order",
+  "Friendly MolaMola bartenders",
+  "Cups, straws, ice and napkins",
+  "Menu sign for your guests",
+  "Cleanup when we leave",
+];
+
+export const pricingAddOnGroups: { title: string; items: { label: string; price: string }[] }[] = [
+  {
+    title: "Delivery & travel",
+    items: [
+      { label: "Delivery (Ready-to-Serve)", price: "$XX" },
+      { label: "Travel beyond XX km", price: "$X / km" },
+    ],
+  },
+  {
+    title: "Time & staff",
+    items: [
+      { label: "Additional service hours", price: "$XX / hr" },
+      { label: "Additional staff", price: "$XX / hr" },
+    ],
+  },
+  {
+    title: "Make it yours",
+    items: [
+      { label: "Custom drink development", price: "$XX" },
+      { label: "Custom stickers / branding", price: "$XX" },
+      { label: "Extra toppings", price: "$X / guest" },
+    ],
+  },
 ];
 
 export const pricingNote = "Every event is different — contact us for a custom quote.";
+
+export const findTier = (id?: string) => pricingTiers.find((t) => t.id === id);

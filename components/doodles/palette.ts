@@ -13,6 +13,10 @@ export const C = {
   sageDeep: "#a5c08a",
   tangerine: "#f39a5d",
   boba: "#5b3b2c",
+  // mascot, sampled from the MolaMola logo
+  mascotBody: "#dcedf1",
+  mascotFin: "#a6d3e2",
+  mascotWing: "#c3e2ec",
 } as const;
 
 export const stroke = {

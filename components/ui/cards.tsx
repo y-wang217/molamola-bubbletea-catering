@@ -43,47 +43,6 @@ export function FeatureCard({
   );
 }
 
-/** Small illustrated drink card (Build Your Drink Bar, step 01). */
-export function DrinkCard({
-  name,
-  example,
-  liquid,
-  tone,
-  selected,
-  onSelect,
-}: {
-  name: string;
-  example: string;
-  liquid: string;
-  tone: Tone;
-  selected?: boolean;
-  onSelect?: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onSelect}
-      aria-pressed={selected}
-      className={`group flex w-full items-center gap-3 rounded-2xl border-[1.5px] p-3 pr-4 text-left transition duration-200 ${
-        selected ? `border-ink ${toneBg[tone]} shadow-[var(--shadow-sticker)]` : `border-ink/15 bg-paper hover:border-ink/50`
-      }`}
-    >
-      <svg viewBox="0 0 40 52" aria-hidden className="h-12 w-10 shrink-0 transition-transform group-hover:-rotate-6">
-        <path d="M23 2 l-2 14" stroke="#3a2c26" strokeWidth="5" strokeLinecap="round" />
-        <path d="M23 2 l-2 14" stroke="#f7c8d2" strokeWidth="2.6" strokeLinecap="round" />
-        <path d="M6 14 h28 l-3.6 32 q-.4 3 -3.4 3 h-14 q-3 0 -3.4 -3 Z" fill={liquid} />
-        <path d="M6 14 h28 l-1 9 h-26 Z" fill="#fffaf0" opacity=".7" />
-        <path d="M6 14 h28 l-3.6 32 q-.4 3 -3.4 3 h-14 q-3 0 -3.4 -3 Z" fill="none" stroke="#3a2c26" strokeWidth="2" strokeLinejoin="round" />
-        <rect x="4" y="11" width="32" height="5" rx="2.5" fill="#fffaf0" stroke="#3a2c26" strokeWidth="2" />
-      </svg>
-      <span>
-        <span className="block font-display text-[17px] font-bold tracking-[-0.01em]">{name}</span>
-        <span className="block text-[13px] text-cocoa">{example}</span>
-      </span>
-    </button>
-  );
-}
-
 /** Ready-to-Serve / Full Service card. `detailed` adds the details table (Catering page). */
 export function CateringPackageCard({ pkg, detailed = false }: { pkg: CateringPackage; detailed?: boolean }) {
   return (
@@ -126,10 +85,10 @@ export function CateringPackageCard({ pkg, detailed = false }: { pkg: CateringPa
   );
 }
 
-export function PricingCard({ tier, compact = false }: { tier: PricingTier; compact?: boolean }) {
+export function PricingCard({ tier }: { tier: PricingTier }) {
   return (
     <article
-      className={`relative flex h-full flex-col rounded-[var(--radius-card)] border-[1.5px] border-ink ${toneBg[tier.tone]} p-5 sm:p-6 ${lift} ${
+      className={`relative flex h-full flex-col rounded-[var(--radius-card)] border-[1.5px] border-ink ${toneBg[tier.tone]} p-6 ${lift} ${
         tier.featured ? "shadow-[var(--shadow-sticker-lg)]" : ""
       }`}
     >
@@ -138,22 +97,19 @@ export function PricingCard({ tier, compact = false }: { tier: PricingTier; comp
       )}
       <p className="text-xs font-bold tracking-[0.16em] uppercase">{tier.name}</p>
       <p className="mt-1 text-[14px] text-ink/70">{tier.guests}</p>
-      <div className={compact ? "mt-auto pt-6" : "pt-5"}>
-        <div className="border-t-[1.5px] border-dashed border-ink/30 pt-5">
-          <p className="font-hand text-xl leading-none text-ink/70">{tier.priceNote}</p>
-          <p className="font-display text-4xl font-extrabold tracking-[-0.04em] sm:text-5xl">{tier.price}</p>
-        </div>
+      <div className="mt-5 border-t-[1.5px] border-dashed border-ink/30 pt-5">
+        <p className="font-hand text-xl leading-none text-ink/70">{tier.priceNote}</p>
+        <p className="font-display text-5xl font-extrabold tracking-[-0.04em]">{tier.price}</p>
+        <p className="mt-2 text-[14px] leading-snug text-ink/75">{tier.blurb}</p>
       </div>
-      {!compact && (
-        <ul className="mt-6 space-y-2 text-[14px]">
-          {tier.includes.map((i) => (
-            <li key={i} className="flex gap-2">
-              <span aria-hidden>✶</span>
-              {i}
-            </li>
-          ))}
-        </ul>
-      )}
+      <ul className="mt-5 space-y-2 text-[14px]">
+        {tier.includes.map((i) => (
+          <li key={i} className="flex gap-2">
+            <span aria-hidden>✶</span>
+            {i}
+          </li>
+        ))}
+      </ul>
     </article>
   );
 }

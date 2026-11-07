@@ -4,7 +4,10 @@ import { motion, useMotionValue, useReducedMotion, useScroll, useTransform, type
 import { useRef, type ReactNode } from "react";
 import { Cup, type CupLayers } from "@/components/doodles/cup";
 import { DoodleArrow, DoodleDecoration, type DoodleKind } from "@/components/doodles/doodle";
+import { Mascot } from "@/components/doodles/mascot";
+import { C } from "@/components/doodles/palette";
 import { CTAButton } from "@/components/ui/cta-button";
+import { WatercolorBlob } from "@/components/ui/decor";
 import { Container } from "@/components/ui/layout";
 
 const hero = {
@@ -15,23 +18,21 @@ const hero = {
   secondary: { href: "/catering", label: "Explore Catering" },
 };
 
-// Scroll progress → when each word / cup layer comes in.
-const WORD_IN: ([number, number] | null)[] = [null, null, [0.12, 0.28], [0.3, 0.46], [0.5, 0.68]];
+// Scroll progress → when each word / cup layer comes in. Kept short so it plays with a light scroll.
+const WORD_IN: ([number, number] | null)[] = [null, null, [0.08, 0.24], [0.26, 0.42], [0.44, 0.6]];
 
-const notes: { text: string; at: [number, number]; className: string; flip?: boolean; arrow: string }[] = [
-  { text: "fresh-brewed tea", at: [0.12, 0.24], className: "right-[calc(100%-1rem)] top-[50%]", arrow: "rotate-[-10deg]" },
-  { text: "lots of ice!", at: [0.34, 0.44], className: "left-[calc(100%-1.5rem)] top-[24%]", flip: true, arrow: "rotate-[-14deg]" },
-  { text: "brown sugar boba", at: [0.5, 0.6], className: "right-[calc(100%-2rem)] top-[80%]", arrow: "rotate-[-30deg]" },
-  { text: "your sticker here", at: [0.66, 0.76], className: "left-[calc(100%-1rem)] top-[58%]", flip: true, arrow: "rotate-[6deg]" },
+const notes: { text: string; at: [number, number]; className: string; flip?: boolean; arrow: string; icon: DoodleKind }[] = [
+  { text: "fresh-brewed tea", at: [0.08, 0.2], className: "right-[calc(100%-1rem)] top-[50%]", arrow: "rotate-[-10deg]", icon: "drop" },
+  { text: "lots of ice!", at: [0.3, 0.4], className: "left-[calc(100%-1.5rem)] top-[24%]", flip: true, arrow: "rotate-[-14deg]", icon: "sparkle" },
+  { text: "brown sugar boba", at: [0.44, 0.54], className: "right-[calc(100%-2rem)] top-[80%]", arrow: "rotate-[-30deg]", icon: "boba" },
+  { text: "our little sticker", at: [0.58, 0.68], className: "left-[calc(100%-1rem)] top-[58%]", flip: true, arrow: "rotate-[6deg]", icon: "heart" },
 ];
 
 const sparkles: { kind: DoodleKind; className: string; at: number }[] = [
-  { kind: "star", className: "left-[2%] top-[14%] h-10 w-10", at: 0.76 },
-  { kind: "heart", className: "right-[0%] top-[6%] h-9 w-9", at: 0.79 },
-  { kind: "sparkle", className: "right-[10%] bottom-[18%] h-8 w-8", at: 0.82 },
-  { kind: "boba", className: "left-[6%] bottom-[8%] h-10 w-10", at: 0.84 },
-  { kind: "flower", className: "right-[-4%] top-[40%] h-8 w-8", at: 0.86 },
-  { kind: "sparkle", className: "left-[-6%] top-[40%] h-6 w-6", at: 0.88 },
+  { kind: "star", className: "left-[2%] top-[14%] h-10 w-10", at: 0.7 },
+  { kind: "heart", className: "right-[0%] top-[6%] h-9 w-9", at: 0.73 },
+  { kind: "sparkle", className: "left-[4%] bottom-[22%] h-8 w-8", at: 0.76 },
+  { kind: "flower", className: "right-[-4%] top-[40%] h-8 w-8", at: 0.8 },
 ];
 
 export function Hero() {
@@ -42,28 +43,30 @@ export function Hero() {
   const p = reduce ? finished : scrollYProgress;
 
   const layers: CupLayers = {
-    tea: useTransform(p, [0.04, 0.3], [0, 1], { clamp: true }),
-    milk: useTransform(p, [0.18, 0.34], [0, 1]),
-    ice: useTransform(p, [0.32, 0.46], [0, 1]),
-    toppings: useTransform(p, [0.48, 0.62], [0, 1]),
-    sticker: useTransform(p, [0.64, 0.76], [0, 1]),
+    tea: useTransform(p, [0.02, 0.25], [0, 1]),
+    milk: useTransform(p, [0.14, 0.3], [0, 1]),
+    ice: useTransform(p, [0.28, 0.42], [0, 1]),
+    toppings: useTransform(p, [0.42, 0.56], [0, 1]),
+    sticker: useTransform(p, [0.56, 0.7], [0, 1]),
   };
   const hintOpacity = useTransform(p, [0, 0.08], [1, 0]);
-  const blobY = useTransform(p, [0, 1], [0, -60]);
-  const cupScale = useTransform(p, [0, 1], [0.94, 1]);
+  const blobY = useTransform(p, [0, 1], [0, -40]);
+  const cupScale = useTransform(p, [0, 1], [0.95, 1]);
+  const fishX = useTransform(p, [0.66, 0.8], [60, 0]);
+  const fishOpacity = useTransform(p, [0.66, 0.76], [0, 1]);
 
   return (
-    <section ref={ref} aria-label="Introduction" className="relative motion-safe:h-[280vh]">
+    <section ref={ref} aria-label="Introduction" className="relative motion-safe:h-[210vh]">
       <div className="flex items-start overflow-hidden py-6 motion-safe:sticky motion-safe:top-0 motion-safe:h-svh motion-safe:py-0 lg:items-center">
         <BackgroundDoodles progress={p} />
         <Container className="relative grid w-full items-center gap-5 pt-24 pb-6 sm:pt-28 lg:grid-cols-[1.08fr_0.92fr] lg:gap-10 lg:pt-16">
           {/* copy */}
           <div className="relative z-10">
-            <p className="inline-flex items-center gap-2 rounded-full border-[1.5px] border-ink bg-paper px-3.5 py-1.5 text-[13px] font-semibold">
+            <p className="inline-flex items-center gap-2 rounded-full border-[1.5px] border-ink/70 bg-paper px-3.5 py-1.5 text-[13px] font-semibold">
               <DoodleDecoration kind="sparkle" className="h-4 w-4" />
               {hero.eyebrow}
             </p>
-            <h1 className="mt-4 font-display text-[2.75rem] leading-[0.95] sm:mt-5 font-extrabold tracking-[-0.045em] sm:text-7xl lg:text-[5.6rem] xl:text-[6.4rem]">
+            <h1 className="mt-4 font-display text-[2.75rem] leading-[0.95] font-extrabold tracking-[-0.045em] sm:mt-5 sm:text-7xl lg:text-[5.6rem] xl:text-[6.4rem]">
               {hero.headline.map((word, i) => (
                 <Word key={word} progress={p} range={WORD_IN[i]} underline={i === hero.headline.length - 1}>
                   {word}
@@ -83,9 +86,16 @@ export function Hero() {
 
           {/* cup */}
           <div className="relative mx-auto w-[min(44vw,26svh)] sm:w-[min(17rem,30svh)] lg:w-[min(23rem,52svh)] xl:w-[min(25rem,56svh)]">
-            <motion.div aria-hidden style={{ y: blobY }} className="absolute inset-[-8%_-18%_-4%_-18%] -z-0 rounded-[48%_52%_44%_56%/55%_45%_55%_45%] bg-powder-soft" />
+            <motion.div aria-hidden style={{ y: blobY }} className="absolute inset-[-14%_-26%_-6%_-26%]">
+              <WatercolorBlob color={C.blue} spots={C.butter} className="h-full w-full opacity-70" seed={7} />
+            </motion.div>
+            <Bubbles />
             <motion.div style={{ scale: cupScale }} className="relative">
               <Cup layers={layers} liquid="#d9a77c" toppingKinds={["boba"]} title="A MolaMola milk tea filling up as you scroll" />
+            </motion.div>
+
+            <motion.div aria-hidden style={{ x: fishX, opacity: fishOpacity }} className="absolute -right-[24%] -bottom-6 w-[40%]">
+              <Mascot className="h-auto w-full -scale-x-100 rotate-6" float title="" />
             </motion.div>
 
             {sparkles.map((s, i) => (
@@ -93,7 +103,7 @@ export function Hero() {
             ))}
 
             {notes.map((n) => (
-              <Note key={n.text} progress={p} at={n.at} className={n.className} flip={n.flip} arrow={n.arrow}>
+              <Note key={n.text} progress={p} {...n}>
                 {n.text}
               </Note>
             ))}
@@ -109,9 +119,9 @@ export function Hero() {
 }
 
 function Word({ children, progress, range, underline }: { children: ReactNode; progress: MotionValue<number>; range: [number, number] | null; underline?: boolean }) {
-  const opacity = useTransform(progress, range ?? [0, 1], range ? [0.16, 1] : [1, 1]);
+  const opacity = useTransform(progress, range ?? [0, 1], range ? [0.18, 1] : [1, 1]);
   const y = useTransform(progress, range ?? [0, 1], range ? [10, 0] : [0, 0]);
-  const draw = useTransform(progress, [0.72, 0.9], [0, 1]);
+  const draw = useTransform(progress, [0.62, 0.8], [0, 1]);
   return (
     <motion.span style={{ opacity, y }} className="relative mr-[0.22em] inline-block last:mr-0">
       <span className="relative z-10">{children}</span>
@@ -124,12 +134,31 @@ function Word({ children, progress, range, underline }: { children: ReactNode; p
   );
 }
 
-function Note({ children, progress, at, className, flip, arrow }: { children: ReactNode; progress: MotionValue<number>; at: [number, number]; className: string; flip?: boolean; arrow: string }) {
+function Note({
+  children,
+  progress,
+  at,
+  className,
+  flip,
+  arrow,
+  icon,
+}: {
+  children: ReactNode;
+  progress: MotionValue<number>;
+  at: [number, number];
+  className: string;
+  flip?: boolean;
+  arrow: string;
+  icon: DoodleKind;
+}) {
   const opacity = useTransform(progress, at, [0, 1]);
   const x = useTransform(progress, at, [flip ? 12 : -12, 0]);
   return (
     <motion.div aria-hidden style={{ opacity, x }} className={`absolute hidden whitespace-nowrap xl:block ${className} ${flip ? "text-left" : "text-right"}`}>
-      <p className="font-hand text-[1.35rem] leading-none 2xl:text-[1.6rem]">{children}</p>
+      <p className={`flex items-center gap-1.5 font-hand text-[1.4rem] leading-none 2xl:text-[1.6rem] ${flip ? "" : "justify-end"}`}>
+        <DoodleDecoration kind={icon} className="h-5 w-5" />
+        {children}
+      </p>
       <DoodleArrow flip={flip} className={`mt-1 h-8 w-16 ${flip ? "mr-auto" : "ml-auto"} ${arrow}`} />
     </motion.div>
   );
@@ -144,13 +173,36 @@ function Sparkle({ progress, at, kind, className }: { progress: MotionValue<numb
   );
 }
 
+/** Little bubbles drifting up beside the cup, like the ones in the logo. */
+function Bubbles() {
+  return (
+    <div aria-hidden className="pointer-events-none absolute top-[6%] -left-[6%] h-1/2 w-10">
+      {[
+        { size: 14, left: 8, delay: 0 },
+        { size: 8, left: 22, delay: 1.6 },
+        { size: 11, left: 2, delay: 3.1 },
+      ].map((b, i) => (
+        <span
+          key={i}
+          className="absolute bottom-0 rounded-full border-2 border-ink/70 motion-safe:animate-rise"
+          style={{ width: b.size, height: b.size, left: b.left, animationDelay: `${b.delay}s` }}
+        />
+      ))}
+    </div>
+  );
+}
+
 function BackgroundDoodles({ progress }: { progress: MotionValue<number> }) {
-  const slow = useTransform(progress, [0, 1], [0, -80]);
-  const fast = useTransform(progress, [0, 1], [0, -160]);
+  const slow = useTransform(progress, [0, 1], [0, -60]);
+  const fast = useTransform(progress, [0, 1], [0, -120]);
   return (
     <div aria-hidden className="pointer-events-none absolute inset-0">
-      <motion.div style={{ y: slow }} className="absolute top-[18%] left-[-6%] h-72 w-72 rounded-full bg-butter-soft blur-[2px]" />
-      <motion.div style={{ y: fast }} className="absolute right-[6%] bottom-[6%] h-40 w-40 rounded-full bg-blush-soft" />
+      <motion.div style={{ y: slow }} className="absolute top-[14%] left-[-8%] h-80 w-80">
+        <WatercolorBlob color={C.butter} className="h-full w-full opacity-45" seed={2} />
+      </motion.div>
+      <motion.div style={{ y: fast }} className="absolute right-[4%] bottom-[2%] h-44 w-44">
+        <WatercolorBlob color={C.pink} className="h-full w-full opacity-50" seed={11} />
+      </motion.div>
       <motion.div style={{ y: fast }} className="absolute top-[22%] left-[44%] hidden lg:block">
         <DoodleDecoration kind="squiggle" className="h-10 w-16" />
       </motion.div>

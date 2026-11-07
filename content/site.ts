@@ -3,10 +3,10 @@
 
 export const brand = {
   name: "MolaMola",
-  tagline: "Dive Into Flavours",
+  tagline: "Dive into flavours",
   description:
     "Custom drink catering for weddings, parties, corporate events, pop-ups and celebrations. Ready-to-serve cups or a full MolaMola drink bar.",
-  serviceArea: "Toronto & the GTA",
+  serviceArea: "Markham, Scarborough & the GTA",
 };
 
 export const mainNav = [

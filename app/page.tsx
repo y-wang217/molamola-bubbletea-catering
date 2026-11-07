@@ -1,26 +1,23 @@
 import { Hero } from "@/components/sections/hero";
-import { Celebrate } from "@/components/sections/celebrate";
-import { CateringOptions } from "@/components/sections/catering-options";
-import { BuildYourBar } from "@/components/sections/build-your-bar";
-import { HowItWorks } from "@/components/sections/how-it-works";
-import { Pricing } from "@/components/sections/pricing";
-import { Gallery } from "@/components/sections/gallery";
-import { WhyMolaMola } from "@/components/sections/why";
-import { FAQ } from "@/components/sections/faq";
+import { Celebrate } from "@/components/sections/home/celebrate";
+import { CateringIntro } from "@/components/sections/home/catering-intro";
+import { DrinkJourney } from "@/components/sections/home/drink-journey";
+import { WhyMolaMola } from "@/components/sections/home/why";
+import { FeaturedEvents } from "@/components/sections/home/featured-events";
+import { PricingTeaser } from "@/components/sections/home/pricing-teaser";
 import { FinalCTA } from "@/components/sections/final-cta";
 
+// Homepage = curated overview. Each section previews a topic and links to its page for the full story.
 export default function Home() {
   return (
     <>
       <Hero />
       <Celebrate />
-      <CateringOptions tabIndex="02" />
-      <BuildYourBar tabIndex="03" />
-      <HowItWorks tabIndex="04" />
-      <Pricing variant="compact" tabIndex="05" />
-      <Gallery variant="preview" tabIndex="06" />
-      <WhyMolaMola tabIndex="07" />
-      <FAQ tabIndex="08" limit={5} />
+      <CateringIntro />
+      <DrinkJourney />
+      <WhyMolaMola />
+      <FeaturedEvents />
+      <PricingTeaser />
       <FinalCTA />
     </>
   );

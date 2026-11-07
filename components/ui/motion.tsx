@@ -1,7 +1,23 @@
 "use client";
 
 import { motion, MotionConfig, useReducedMotion, useScroll, useTransform } from "motion/react";
-import { useRef, type ReactNode } from "react";
+import { useRef, useSyncExternalStore, type ReactNode } from "react";
+
+/**
+ * Reduced-motion preference that is safe to use for rendering decisions (classes, state):
+ * false during hydration so it matches the server HTML, then the real value after mount.
+ */
+export function useReducedMotionSafe() {
+  const reduce = useReducedMotion();
+  const hydrated = useSyncExternalStore(
+    noopSubscribe,
+    () => true,
+    () => false,
+  );
+  return hydrated && !!reduce;
+}
+
+const noopSubscribe = () => () => {};
 
 /** App-wide motion settings. `reducedMotion="user"` honours the OS setting. */
 export function MotionProvider({ children }: { children: ReactNode }) {

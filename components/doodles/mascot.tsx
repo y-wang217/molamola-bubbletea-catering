@@ -1,45 +1,74 @@
-import { C, stroke } from "./palette";
+import { C } from "./palette";
 
 /**
- * The MolaMola fish (an ocean sunfish): round body, tall fins, scalloped tail.
- * `float` adds a gentle idle bob (auto-disabled for reduced motion).
+ * The MolaMola fish, drawn to match the brand logo: round body, front-facing dot eyes,
+ * kissy "ε" mouth, little wing fins, one tall dorsal fin, scalloped tail and bubbles.
+ * Coordinates live in a 700×730 space so the line weight matches the logo.
  */
-export function Mascot({ className = "h-32 w-32", float = false, title = "MolaMola the sunfish" }: { className?: string; float?: boolean; title?: string }) {
+export function MascotArt({ tone = "color", bubbles = true }: { tone?: "color" | "line"; bubbles?: boolean }) {
+  const body = tone === "color" ? C.mascotBody : "#fff";
+  const fin = tone === "color" ? C.mascotFin : "#fff";
+  const wing = tone === "color" ? C.mascotWing : "#fff";
+  return (
+    <g stroke={C.ink} strokeWidth={15} strokeLinecap="round" strokeLinejoin="round">
+      {/* dorsal fin (behind body) */}
+      <path fill={fin} d="M452 168C468 116 494 62 524 40c20-12 31 2 28 32-2 34-4 70-2 108Z" />
+      {/* body + scalloped tail + bottom fin */}
+      <path
+        fill={body}
+        d="M175 205C260 152 420 142 520 166c50 12 90 42 105 79Q662 268 640 300Q676 330 650 360Q682 392 648 420Q672 452 632 478Q650 515 600 530Q600 565 560 565C530 570 500 572 485 576C470 620 470 680 450 690C430 698 410 650 398 578C330 580 230 580 175 545C110 500 95 420 105 340C112 280 135 235 175 205Z"
+      />
+      {/* tail line */}
+      <path fill="none" strokeWidth={11} d="M556 260C576 332 569 440 529 515" />
+      {/* left wing */}
+      <path fill={wing} d="M108 335C80 315 45 318 42 345c-2 15 10 23 18 25-15 8-15 28 2 30-10 12 0 30 20 25 10 5 20 7 28 5" />
+      <path fill="none" strokeWidth={10} d="M62 371c10 2 18 3 26 0M64 400c9 2 17 1 25-3" />
+      {/* right wing (on the body) */}
+      <path
+        fill={wing}
+        d="M380 398c2-36 32-72 66-75 25-1 30 22 10 33 22 4 20 30-3 30 18 10 10 33-14 27-8 20-33 28-48 18"
+      />
+      {/* eyes */}
+      <circle cx="172" cy="318" r="27" fill={C.ink} stroke="none" />
+      <circle cx="292" cy="326" r="27" fill={C.ink} stroke="none" />
+      {/* blush */}
+      <ellipse cx="132" cy="368" rx="16" ry="8" fill={tone === "color" ? C.pink : "#fff"} strokeWidth={6} />
+      <ellipse cx="334" cy="374" rx="16" ry="8" fill={tone === "color" ? C.pink : "#fff"} strokeWidth={6} />
+      {/* kissy mouth */}
+      <path fill="none" strokeWidth={11} d="M224 371c-17 0-17 20-4 21-15 2-13 26 7 22" />
+      {bubbles && (
+        <g fill="none" strokeWidth={8}>
+          <circle cx="104" cy="208" r="13" />
+          <circle cx="116" cy="160" r="6" />
+        </g>
+      )}
+    </g>
+  );
+}
+
+export function Mascot({
+  className = "h-32 w-32",
+  float = false,
+  tone = "color",
+  bubbles = true,
+  title = "The MolaMola fish",
+}: {
+  className?: string;
+  float?: boolean;
+  tone?: "color" | "line";
+  bubbles?: boolean;
+  title?: string;
+}) {
   return (
     <svg
-      viewBox="0 0 200 200"
+      viewBox="20 10 680 700"
       role={title ? "img" : undefined}
       aria-hidden={title ? undefined : true}
       className={`${float ? "animate-float" : ""} ${className}`}
       overflow="visible"
     >
       {title && <title>{title}</title>}
-      <g {...stroke} strokeWidth={3.2}>
-        {/* fins */}
-        <path fill={C.blueDeep} d="M96 54c-5-20 1-44 15-47 13 1 14 26 8 49Z" />
-        <path fill={C.blueDeep} d="M96 146c-5 20 1 44 15 47 13-1 14-26 8-49Z" />
-        {/* tail (clavus) */}
-        <path fill={C.blue} d="M150 64c14 1 22 10 18 18 9 3 10 13 3 18 7 5 6 15-3 18 4 8-4 17-18 18Z" />
-        {/* body */}
-        <path fill={C.blue} d="M38 100c0-36 30-56 72-55 34 1 52 22 52 55s-18 54-52 55c-42 1-72-19-72-55Z" />
-        {/* belly shine */}
-        <path fill="none" stroke="#fff" strokeWidth={4} d="M60 66c8-8 20-12 32-12" opacity=".8" />
-        {/* spots */}
-        <g fill={C.blueDeep} stroke="none">
-          <circle cx="122" cy="74" r="4" />
-          <circle cx="138" cy="92" r="3" />
-          <circle cx="128" cy="128" r="3.5" />
-        </g>
-        {/* pectoral fin */}
-        <path fill={C.paper} d="M98 104c10-12 26-10 28 1-7 9-20 12-28-1Z" />
-        {/* eye */}
-        <circle cx="70" cy="90" r="11" fill={C.paper} />
-        <circle cx="72" cy="91" r="6" fill={C.ink} stroke="none" />
-        <circle cx="69.5" cy="88" r="2" fill="#fff" stroke="none" />
-        {/* blush + smile */}
-        <ellipse cx="74" cy="114" rx="9" ry="4.5" fill={C.pink} stroke="none" />
-        <path fill="none" d="M47 106c4 5 9 5 12 0" />
-      </g>
+      <MascotArt tone={tone} bubbles={bubbles} />
     </svg>
   );
 }

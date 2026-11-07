@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { brand, footerNav, socials, type SocialKind } from "@/content/site";
-import { Mascot } from "@/components/doodles/mascot";
+import { Logo } from "./logo";
 import { DoodleDecoration } from "@/components/doodles/doodle";
 import { Container } from "@/components/ui/layout";
 
@@ -33,12 +33,10 @@ export function Footer() {
       <DoodleDecoration kind="star" className="absolute bottom-24 left-[46%] hidden h-8 w-8 md:block" motion="twinkle" />
       <Container className="relative grid gap-12 py-16 md:grid-cols-[1.4fr_1fr_1fr] md:py-20">
         <div>
-          <div className="flex items-center gap-3">
-            <Mascot className="h-16 w-16 -rotate-6" float />
-            <p className="font-display text-4xl font-extrabold tracking-[-0.04em]">{brand.name}</p>
-          </div>
-          <p className="mt-4 font-hand text-3xl">{brand.name} — {brand.tagline}</p>
-          <p className="mt-2 max-w-xs text-[15px] text-ink/70">Drink catering across {brand.serviceArea}.</p>
+          <Logo className="h-20 w-auto sm:h-24" href={null} />
+          <p className="mt-5 max-w-xs text-[15px] leading-relaxed text-ink/75">
+            Drinks-first catering for weddings, parties and events across {brand.serviceArea}.
+          </p>
         </div>
 
         <nav aria-label="Footer">

@@ -5,18 +5,9 @@ import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { mainNav, primaryCta, socials } from "@/content/site";
-import { Mascot } from "@/components/doodles/mascot";
+import { Logo } from "./logo";
 import { DoodleDecoration } from "@/components/doodles/doodle";
 import { CTAButton } from "@/components/ui/cta-button";
-
-export function Logo({ className = "" }: { className?: string }) {
-  return (
-    <Link href="/" className={`flex items-center gap-2 ${className}`} aria-label="MolaMola home">
-      <Mascot className="h-9 w-9 -rotate-6" title="" />
-      <span className="font-display text-[1.35rem] font-extrabold tracking-[-0.04em]">MolaMola</span>
-    </Link>
-  );
-}
 
 export function Nav() {
   const pathname = usePathname();
@@ -44,8 +35,8 @@ export function Nav() {
 
   return (
     <header className="sticky top-0 z-50 px-3 pt-3 sm:px-5">
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 rounded-full border-[1.5px] border-ink bg-paper/90 py-2 pr-2 pl-4 backdrop-blur-md sm:pl-5">
-        <Logo />
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 rounded-full border-[1.5px] border-ink bg-paper/90 py-1.5 pr-2 pl-4 backdrop-blur-md sm:pl-6">
+        <Logo className="h-10 w-auto sm:h-11" />
 
         <nav aria-label="Main" className="hidden xl:block">
           <ul className="flex items-center gap-1">
@@ -101,7 +92,7 @@ export function Nav() {
             className="dot-grid fixed inset-0 z-50 flex flex-col overflow-y-auto bg-cream px-6 pt-5 pb-10"
           >
             <div className="flex items-center justify-between">
-              <Logo />
+              <Logo className="h-10 w-auto" />
               <button type="button" onClick={() => setOpen(false)} className="h-11 rounded-full border-[1.5px] border-ink bg-paper px-4 text-[14.5px] font-semibold">
                 Close ✕
               </button>

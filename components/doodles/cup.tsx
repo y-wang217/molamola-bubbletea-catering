@@ -3,6 +3,7 @@
 import { animate, motion, useMotionValue, useReducedMotion, useTransform, type MotionValue } from "motion/react";
 import { useEffect, useId } from "react";
 import type { ToppingKind } from "@/content/drinks";
+import { MascotArt } from "./mascot";
 import { C, stroke } from "./palette";
 
 export type CupLayerKey = "tea" | "milk" | "ice" | "toppings" | "sticker";
@@ -42,6 +43,12 @@ type CupProps = {
   liquid?: string;
   toppingKinds?: ToppingKind[];
   label?: string;
+  /** Straw colour (e.g. wedding colours). */
+  strawColor?: string;
+  /** Dashed ring on the sticker. */
+  accent?: string;
+  /** "mascot" = MolaMola fish sticker, "logo" = corporate logo placeholder. */
+  stickerMode?: "mascot" | "logo";
   className?: string;
   title?: string;
 };
@@ -55,7 +62,17 @@ const ALOE: [number, number, number][] = [
 ];
 
 /** Layered takeaway cup. Every layer is driven by a motion value so it can follow scroll or state. */
-export function Cup({ layers, liquid = "#d9a77c", toppingKinds = ["boba"], label = "MolaMola", className = "w-full", title = "A MolaMola drink" }: CupProps) {
+export function Cup({
+  layers,
+  liquid = "#d9a77c",
+  toppingKinds = ["boba"],
+  label = "mola mola",
+  strawColor = C.pink,
+  accent = C.pinkDeep,
+  stickerMode = "mascot",
+  className = "w-full",
+  title = "A MolaMola drink",
+}: CupProps) {
   const teaY = useTransform(layers.tea, (v) => (1 - v) * 200);
   const iceY = useTransform(layers.ice, (v) => (1 - v) * -90);
   const topY = useTransform(layers.toppings, (v) => (1 - v) * -120);
@@ -75,7 +92,7 @@ export function Cup({ layers, liquid = "#d9a77c", toppingKinds = ["boba"], label
 
       {/* straw (behind the cup) */}
       <g {...stroke} strokeWidth={3}>
-        <path fill={C.pink} d="M114 104 L134 4 L150 7 L130 107 Z" />
+        <path d="M114 104 L134 4 L150 7 L130 107 Z" style={{ fill: strawColor, transition: "fill .5s ease" }} />
         <path fill="none" stroke="#fff" strokeWidth={3} d="M139 18 L132 52" opacity=".7" />
       </g>
 
@@ -151,16 +168,19 @@ export function Cup({ layers, liquid = "#d9a77c", toppingKinds = ["boba"], label
       {/* sticker */}
       <motion.g style={{ opacity: layers.sticker, scale: stickerScale, rotate: stickerRotate }}>
         <circle cx="110" cy="190" r="38" fill="#fff" {...stroke} strokeWidth={2.6} />
-        <circle cx="110" cy="190" r="31" fill="none" stroke={C.pinkDeep} strokeWidth={1.6} strokeDasharray="3 4" />
-        {/* mini fish */}
-        <g transform="translate(91 165) scale(.19)" {...stroke} strokeWidth={10}>
-          <path fill={C.blueDeep} d="M96 54c-5-20 1-44 15-47 13 1 14 26 8 49Z" />
-          <path fill={C.blueDeep} d="M96 146c-5 20 1 44 15 47 13-1 14-26 8-49Z" />
-          <path fill={C.blue} d="M150 64c14 1 22 10 18 18 9 3 10 13 3 18 7 5 6 15-3 18 4 8-4 17-18 18Z" />
-          <path fill={C.blue} d="M38 100c0-36 30-56 72-55 34 1 52 22 52 55s-18 54-52 55c-42 1-72-19-72-55Z" />
-          <circle cx="72" cy="91" r="9" fill={C.ink} stroke="none" />
-          <ellipse cx="74" cy="116" rx="10" ry="5" fill={C.pink} stroke="none" />
-        </g>
+        <circle cx="110" cy="190" r="31" fill="none" strokeWidth={1.6} strokeDasharray="3 4" style={{ stroke: accent, transition: "stroke .5s ease" }} />
+        {stickerMode === "mascot" ? (
+          <g transform="translate(88.4 154) scale(.06)">
+            <MascotArt bubbles={false} />
+          </g>
+        ) : (
+          <g>
+            <rect x="88" y="160" width="44" height="34" rx="9" fill={C.blue} {...stroke} strokeWidth={2} />
+            <text x="110" y="182" textAnchor="middle" fill={C.ink} style={{ font: "800 11px var(--font-display)", letterSpacing: "0.04em" }}>
+              LOGO
+            </text>
+          </g>
+        )}
         <text x="110" y="214" textAnchor="middle" fill={C.ink} style={{ fontFamily: "var(--font-hand)", fontSize: label.length > 12 ? 13 : 16, fontWeight: 700 }}>
           {label}
         </text>

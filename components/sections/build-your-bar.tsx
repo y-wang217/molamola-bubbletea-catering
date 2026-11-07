@@ -1,39 +1,49 @@
 "use client";
 
-import { useInView } from "motion/react";
+import { AnimatePresence, motion, useInView } from "motion/react";
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { customizations, drinkCategories, toppings, type ToppingKind } from "@/content/drinks";
+import { colourSwatches, customizations, drinkCategories, toppings, type CustomizationId, type ToppingKind } from "@/content/drinks";
 import { Cup, useCupLayers } from "@/components/doodles/cup";
+import { CustomIcon, DrinkIcon, ToppingIcon } from "@/components/doodles/ingredients";
 import { DoodleDecoration } from "@/components/doodles/doodle";
-import { DrinkCard } from "@/components/ui/cards";
+import { C } from "@/components/doodles/palette";
 import { CTAButton } from "@/components/ui/cta-button";
+import { WatercolorBlob } from "@/components/ui/decor";
 import { Container, Section } from "@/components/ui/layout";
 import { SectionHeader } from "@/components/ui/section-header";
+import { toneHex } from "@/lib/tones";
 
 const steps = [
-  { n: "01", title: "Pick Your Drinks", body: "Start with a base. Mix categories, or let us build a lineup for your crowd." },
-  { n: "02", title: "Pick Your Toppings", body: "The chewy, creamy, fruity part. Choose a few for guests to mix and match." },
-  { n: "03", title: "Make It Yours", body: "The details people remember. Names, stickers, colours and menus that match your event." },
+  { n: "01", short: "Drinks", title: "Pick Your Drinks", body: "Start with a base. Mix a few, or let us build a lineup for your crowd." },
+  { n: "02", short: "Toppings", title: "Pick Your Toppings", body: "The chewy, creamy, fruity part. Choose a few for guests to mix and match." },
+  { n: "03", short: "Details", title: "Make It Yours", body: "The details people remember. Watch the cup change as you pick." },
 ];
 
-export function BuildYourBar({ tabIndex = "03" }: { tabIndex?: string }) {
+/** Full interactive drink bar builder (Custom Drinks page). */
+export function BuildYourBar({ tabIndex = "02" }: { tabIndex?: string }) {
   const [active, setActive] = useState(0);
   const [drinkId, setDrinkId] = useState(drinkCategories[0].id);
   const [picked, setPicked] = useState<ToppingKind[]>(["boba"]);
-  const [extras, setExtras] = useState<string[]>(["stickers"]);
-  const [label, setLabel] = useState("");
+  const [extras, setExtras] = useState<CustomizationId[]>(["sticker"]);
+  const [stickerText, setStickerText] = useState("");
+  const [drinkName, setDrinkName] = useState("");
+  const [swatch, setSwatch] = useState(colourSwatches[0]);
 
   const drink = drinkCategories.find((d) => d.id === drinkId) ?? drinkCategories[0];
+  const has = (id: CustomizationId) => extras.includes(id);
+  const showSticker = active >= 2 && (has("sticker") || has("branding"));
   const layers = useCupLayers({
     tea: 1,
     ice: 1,
     milk: drink.milk ? 1 : 0,
     toppings: active >= 1 && picked.length ? 1 : 0,
-    sticker: active >= 2 ? 1 : 0,
+    sticker: showSticker ? 1 : 0,
   });
 
   const toggle = <T,>(list: T[], v: T) => (list.includes(v) ? list.filter((x) => x !== v) : [...list, v]);
-  const stickerText = label.trim() || "MolaMola";
+  const label = stickerText.trim() || "mola mola";
+  const name = drinkName.trim() || "The Blesy";
+  const colourOn = active >= 2 && has("colours");
 
   return (
     <Section id="build" className="overflow-x-clip">
@@ -45,27 +55,78 @@ export function BuildYourBar({ tabIndex = "03" }: { tabIndex?: string }) {
           intro="Three steps from empty cup to your own MolaMola bar. Tap around: the cup follows along."
         />
 
-        <div className="mt-14 grid gap-10 lg:mt-20 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
-          {/* sticky cup panel (top on mobile, right on desktop) */}
+        <div className="mt-12 grid grid-cols-[minmax(0,1fr)] gap-8 lg:mt-16 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-16">
+          {/* stage: sticky on top (mobile) / right (desktop) */}
           <div className="sticky top-[5.25rem] z-20 lg:order-2 lg:top-28 lg:self-start">
-            <div className="dot-grid relative flex items-center gap-4 rounded-[var(--radius-card)] border-[1.5px] border-ink bg-paper p-3 shadow-[var(--shadow-soft)] lg:flex-col lg:gap-6 lg:rounded-[var(--radius-sheet)] lg:p-10">
-              <ol aria-label="Progress" className="order-2 flex flex-col gap-1 lg:order-1 lg:w-full lg:flex-row lg:justify-between lg:gap-2">
+            <div className="relative flex items-center gap-4 rounded-[var(--radius-card)] border-[1.5px] border-ink/15 bg-paper/95 p-3 backdrop-blur lg:flex-col lg:gap-6 lg:rounded-none lg:border-0 lg:bg-transparent lg:p-0 lg:backdrop-blur-none">
+              <ol aria-label="Progress" className="order-2 flex flex-col gap-1 lg:order-1 lg:flex-row lg:gap-6">
                 {steps.map((s, i) => (
                   <li key={s.n} className={`flex items-center gap-2 text-[13px] font-semibold transition-opacity ${i <= active ? "opacity-100" : "opacity-35"}`}>
                     <span className={`flex h-6 w-6 items-center justify-center rounded-full border-[1.5px] border-ink text-[11px] ${i <= active ? "bg-butter" : "bg-paper"}`}>{i + 1}</span>
-                    <span className="hidden sm:inline">{["Drinks", "Toppings", "Details"][i]}</span>
+                    <span className="hidden sm:inline">{s.short}</span>
                   </li>
                 ))}
               </ol>
-              <div className="relative order-1 w-24 shrink-0 sm:w-28 lg:order-2 lg:w-60">
-                <Cup layers={layers} liquid={drink.liquid} toppingKinds={picked} label={stickerText} title={`Your ${drink.name} with ${picked.join(", ") || "no toppings"}`} />
-                <DoodleDecoration kind="sparkle" className="absolute -top-2 -left-6 hidden h-7 w-7 lg:block" motion="twinkle" />
-                <DoodleDecoration kind="heart" className="absolute top-1/3 -right-8 hidden h-7 w-7 lg:block" motion="bob" />
+
+              <div className="relative order-1 w-24 shrink-0 sm:w-28 lg:order-2 lg:w-64">
+                <WatercolorBlob color={toneHex[drink.tone]} spots={C.butter} className="absolute inset-[-30%] hidden h-[160%] w-[160%] opacity-70 lg:block" seed={9} />
+                <div className="relative">
+                  <Cup
+                    layers={layers}
+                    liquid={drink.liquid}
+                    toppingKinds={picked}
+                    label={label}
+                    strawColor={colourOn ? swatch : C.pink}
+                    accent={colourOn ? swatch : C.pinkDeep}
+                    stickerMode={has("branding") ? "logo" : "mascot"}
+                    title={`Your ${drink.name} with ${picked.join(", ") || "no toppings"}`}
+                  />
+                </div>
+
+                {/* desktop-only extras that appear around the cup */}
+                <AnimatePresence>
+                  {active >= 2 && has("names") && (
+                    <motion.div
+                      key="tag"
+                      initial={{ opacity: 0, rotate: -30, y: -10 }}
+                      animate={{ opacity: 1, rotate: -8, y: 0 }}
+                      exit={{ opacity: 0 }}
+                      className="absolute top-[2%] -right-[30%] hidden origin-top-left rounded-lg border-[1.5px] border-ink bg-butter px-3 py-1.5 font-hand text-xl whitespace-nowrap shadow-[var(--shadow-sticker)] lg:block"
+                    >
+                      {name}
+                    </motion.div>
+                  )}
+                  {active >= 2 && has("menu") && (
+                    <motion.div
+                      key="menu"
+                      initial={{ opacity: 0, x: -20, rotate: 0 }}
+                      animate={{ opacity: 1, x: 0, rotate: -5 }}
+                      exit={{ opacity: 0 }}
+                      className="absolute bottom-[2%] -left-[46%] hidden w-32 rounded-xl border-[1.5px] border-ink bg-paper p-3 shadow-[var(--shadow-soft)] lg:block"
+                    >
+                      <p className="text-center font-hand text-lg leading-none text-tangerine-deep">menu</p>
+                      <p className="mt-2 text-[11px] leading-tight font-bold">{has("names") ? name : drink.name}</p>
+                      <p className="text-[10px] leading-tight text-cocoa">{picked.map((p) => toppings.find((t) => t.id === p)?.name).join(" · ") || "no toppings"}</p>
+                      <div className="mt-2 space-y-1">
+                        <span className="block h-[2px] w-full rounded bg-ink/15" />
+                        <span className="block h-[2px] w-2/3 rounded bg-ink/15" />
+                      </div>
+                    </motion.div>
+                  )}
+                  {active >= 2 && has("theme") && (
+                    <motion.div key="theme" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="pointer-events-none absolute inset-0 hidden lg:block">
+                      <DoodleDecoration kind="star" className="absolute -top-6 -left-8 h-9 w-9" motion="twinkle" />
+                      <DoodleDecoration kind="heart" className="absolute top-1/3 -right-12 h-8 w-8" motion="bob" />
+                      <DoodleDecoration kind="flower" className="absolute -bottom-2 -right-6 h-8 w-8" motion="float" />
+                      <DoodleDecoration kind="sparkle" className="absolute top-1/2 -left-10 h-7 w-7" motion="twinkle" delay={1} />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
-              <p aria-live="polite" className="order-3 min-w-0 flex-1 font-hand text-[1.3rem] leading-tight lg:text-center lg:text-[1.55rem]">
-                {drink.name}
-                {picked.length > 0 && <> + {picked.map((p) => toppings.find((t) => t.id === p)?.name.toLowerCase()).join(", ")}</>}
-                {active >= 2 && extras.length > 0 && <span className="block text-cocoa">with {extras.length} custom touch{extras.length > 1 ? "es" : ""} ✶</span>}
+
+              <p aria-live="polite" className="order-3 min-w-0 flex-1 font-hand text-[1.3rem] leading-tight lg:text-center lg:text-[1.6rem]">
+                {active >= 2 && has("names") ? `"${name}"` : drink.name}
+                {picked.length > 0 && active >= 1 && <> + {picked.map((p) => toppings.find((t) => t.id === p)?.name.toLowerCase()).join(", ")}</>}
               </p>
             </div>
           </div>
@@ -73,46 +134,68 @@ export function BuildYourBar({ tabIndex = "03" }: { tabIndex?: string }) {
           {/* steps */}
           <div className="lg:order-1">
             <Step index={0} onActive={setActive} {...steps[0]}>
-              <div className="grid gap-3 sm:grid-cols-2">
+              <TokenRow label="Drinks" radio>
                 {drinkCategories.map((d) => (
-                  <DrinkCard key={d.id} name={d.name} example={d.example} liquid={d.liquid} tone={d.tone} selected={d.id === drinkId} onSelect={() => setDrinkId(d.id)} />
+                  <Token key={d.id} label={d.name} sub={d.example} selected={d.id === drinkId} tone={toneHex[d.tone]} onClick={() => setDrinkId(d.id)} radio>
+                    <DrinkIcon drink={d} className="h-14 w-11" />
+                  </Token>
                 ))}
-              </div>
+              </TokenRow>
             </Step>
 
             <Step index={1} onActive={setActive} {...steps[1]}>
-              <div className="flex flex-wrap gap-2.5">
+              <TokenRow label="Toppings">
                 {toppings.map((t) => (
-                  <Chip key={t.id} active={picked.includes(t.id)} onClick={() => setPicked(toggle(picked, t.id))} sub={t.note}>
-                    {t.name}
-                  </Chip>
+                  <Token key={t.id} label={t.name} sub={t.note} selected={picked.includes(t.id)} tone={C.pink} onClick={() => setPicked(toggle(picked, t.id))}>
+                    <ToppingIcon kind={t.id} className="h-12 w-12" />
+                  </Token>
                 ))}
-              </div>
+              </TokenRow>
             </Step>
 
             <Step index={2} onActive={setActive} {...steps[2]}>
-              <div className="flex flex-wrap gap-2.5">
+              <TokenRow label="Custom details">
                 {customizations.map((c) => (
-                  <Chip key={c.id} active={extras.includes(c.id)} onClick={() => setExtras(toggle(extras, c.id))}>
-                    {c.name}
-                  </Chip>
+                  <Token key={c.id} label={c.name} sub={c.note} selected={has(c.id)} tone={C.butter} onClick={() => setExtras(toggle(extras, c.id))}>
+                    <CustomIcon id={c.id} className="h-12 w-12" accent={colourOn ? swatch : C.pinkDeep} />
+                  </Token>
                 ))}
+              </TokenRow>
+
+              <div className="mt-8 grid max-w-lg gap-5">
+                {has("sticker") && (
+                  <Field label="write on the sticker →">
+                    <input value={stickerText} onChange={(e) => setStickerText(e.target.value.slice(0, 16))} placeholder="e.g. Blesy & Ian" className={inputCls} />
+                  </Field>
+                )}
+                {has("names") && (
+                  <Field label="name your drink →">
+                    <input value={drinkName} onChange={(e) => setDrinkName(e.target.value.slice(0, 20))} placeholder="e.g. The Blesy" className={inputCls} />
+                  </Field>
+                )}
+                {has("colours") && (
+                  <Field label="pick your colour →">
+                    <div role="radiogroup" aria-label="Event colour" className="mt-2 flex gap-3">
+                      {colourSwatches.map((c) => (
+                        <button
+                          key={c}
+                          type="button"
+                          role="radio"
+                          aria-checked={swatch === c}
+                          aria-label={`Colour ${c}`}
+                          onClick={() => setSwatch(c)}
+                          className={`h-10 w-10 rounded-full border-[1.5px] border-ink transition-transform ${swatch === c ? "scale-110 shadow-[var(--shadow-sticker)]" : "hover:scale-105"}`}
+                          style={{ backgroundColor: c }}
+                        />
+                      ))}
+                    </div>
+                  </Field>
+                )}
               </div>
-              <label className="mt-7 block max-w-sm">
-                <span className="font-hand text-2xl">write on the sticker →</span>
-                <input
-                  value={label}
-                  onChange={(e) => setLabel(e.target.value.slice(0, 18))}
-                  placeholder="e.g. Blesy & Ian"
-                  className="mt-2 w-full rounded-2xl border-[1.5px] border-ink bg-paper px-4 py-3 text-[16px] outline-none focus:bg-butter-soft"
-                />
-              </label>
+
               <div className="mt-10 flex flex-wrap gap-3">
-                <CTAButton href="/custom-drinks" arrow>
+                <CTAButton href="/contact" arrow>
                   Create a Custom Drink
-                </CTAButton>
-                <CTAButton href="/contact" variant="secondary">
-                  Plan Your Event
                 </CTAButton>
               </div>
             </Step>
@@ -120,6 +203,17 @@ export function BuildYourBar({ tabIndex = "03" }: { tabIndex?: string }) {
         </div>
       </Container>
     </Section>
+  );
+}
+
+const inputCls = "mt-2 w-full min-h-12 rounded-2xl border-[1.5px] border-ink/40 bg-paper px-4 py-3 text-[16px] outline-none focus:border-ink focus:bg-white";
+
+function Field({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <label className="block">
+      <span className="font-hand text-2xl">{label}</span>
+      {children}
+    </label>
   );
 }
 
@@ -131,28 +225,61 @@ function Step({ index, n, title, body, onActive, children }: { index: number; n:
   }, [inView, index, onActive]);
 
   return (
-    <div ref={ref} className="border-t-[1.5px] border-dashed border-ink/25 py-12 first:border-t-0 first:pt-0 lg:flex lg:min-h-[75vh] lg:flex-col lg:justify-center lg:py-16">
+    <div ref={ref} className="py-12 first:pt-2 lg:flex lg:min-h-[72vh] lg:flex-col lg:justify-center lg:py-16">
       <p className="font-hand text-2xl text-tangerine-deep">Step {n}</p>
-      <h3 className="mt-1 font-display text-3xl font-extrabold tracking-[-0.03em] sm:text-4xl">{title}</h3>
+      <h3 className="mt-1 font-display text-3xl font-extrabold tracking-[-0.03em] sm:text-[2.6rem]">{title}</h3>
       <p className="mt-3 max-w-md text-[16px] leading-relaxed text-cocoa">{body}</p>
-      <div className="mt-7">{children}</div>
+      <div className="mt-8">{children}</div>
     </div>
   );
 }
 
-function Chip({ active, onClick, children, sub }: { active: boolean; onClick: () => void; children: ReactNode; sub?: string }) {
+/** Horizontal swipe row on mobile, wrapping row on desktop. */
+function TokenRow({ children, label, radio }: { children: ReactNode; label: string; radio?: boolean }) {
+  return <div role={radio ? "radiogroup" : "group"} aria-label={label} className="no-scrollbar -mx-5 flex gap-2 overflow-x-auto px-5 pt-2 pb-3 sm:mx-0 sm:flex-wrap sm:gap-2.5 sm:overflow-visible sm:px-0">{children}</div>;
+}
+
+function Token({
+  label,
+  sub,
+  selected,
+  tone,
+  onClick,
+  radio,
+  children,
+}: {
+  label: string;
+  sub?: string;
+  selected: boolean;
+  tone: string;
+  onClick: () => void;
+  radio?: boolean;
+  children: ReactNode;
+}) {
   return (
     <button
       type="button"
       onClick={onClick}
-      aria-pressed={active}
-      className={`min-h-11 rounded-2xl border-[1.5px] px-4 py-2.5 text-left text-[15px] font-semibold transition duration-200 ${
-        active ? "-rotate-1 border-ink bg-blush shadow-[var(--shadow-sticker)]" : "border-ink/20 bg-paper hover:border-ink/60"
-      }`}
+      role={radio ? "radio" : undefined}
+      aria-checked={radio ? selected : undefined}
+      aria-pressed={radio ? undefined : selected}
+      title={sub}
+      className="group flex w-[5.4rem] shrink-0 flex-col items-center text-center"
     >
-      {active && <span aria-hidden>✓ </span>}
-      {children}
-      {sub && <span className="block text-[12px] font-normal text-cocoa">{sub}</span>}
+      <span
+        className={`relative flex h-[4.75rem] w-[4.75rem] items-center justify-center rounded-full border-[1.5px] transition duration-200 ${
+          selected ? "-rotate-3 border-ink shadow-[var(--shadow-sticker)]" : "border-ink/15 bg-paper group-hover:-translate-y-0.5 group-hover:border-ink/50"
+        }`}
+        style={selected ? { backgroundColor: tone } : undefined}
+      >
+        <span className="transition-transform duration-300 group-hover:scale-110">{children}</span>
+        {selected && (
+          <span aria-hidden className="absolute -top-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full border-[1.5px] border-ink bg-paper text-[12px] font-bold">
+            ✓
+          </span>
+        )}
+      </span>
+      <span className="mt-2 text-[13px] leading-tight font-semibold">{label}</span>
     </button>
   );
 }
