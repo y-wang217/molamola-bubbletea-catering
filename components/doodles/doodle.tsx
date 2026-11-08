@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react";
+import { hand } from "./art-defs";
 import { C, stroke } from "./palette";
 
 export type DoodleKind =
@@ -38,7 +39,9 @@ export function DoodleDecoration({ kind, className = "h-8 w-8", color, motion = 
       style={{ animationDelay: `${delay}s`, ...style }}
       overflow="visible"
     >
-      <Shape kind={kind} color={color} />
+      <g filter={hand("doodle")}>
+        <Shape kind={kind} color={color} />
+      </g>
     </svg>
   );
 }
@@ -86,9 +89,6 @@ function Shape({ kind, color }: { kind: DoodleKind; color?: string }) {
           <circle cx="13" cy="24" r="7" fill={color ?? C.boba} />
           <circle cx="27" cy="26" r="6" fill={color ?? C.boba} />
           <circle cx="21" cy="13" r="6" fill={color ?? C.boba} />
-          <circle cx="11" cy="21.5" r="1.6" fill="#fff" stroke="none" opacity=".75" />
-          <circle cx="25.3" cy="23.6" r="1.4" fill="#fff" stroke="none" opacity=".75" />
-          <circle cx="19.3" cy="10.8" r="1.4" fill="#fff" stroke="none" opacity=".75" />
         </g>
       );
     case "strawberry":

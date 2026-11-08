@@ -1,4 +1,6 @@
 import type { CustomizationId, DrinkCategory, FlavourId, ToppingKind } from "@/content/drinks";
+import { hand } from "./art-defs";
+import { MascotArt } from "./mascot";
 import { C, stroke } from "./palette";
 
 const s = { ...stroke, strokeWidth: 2.2 };
@@ -8,39 +10,42 @@ export function DrinkIcon({ drink, className = "h-16 w-12" }: { drink: Pick<Drin
   const { liquid, milk, garnish } = drink;
   return (
     <svg viewBox="0 0 48 64" className={className} aria-hidden overflow="visible">
-      <path {...s} fill={C.pink} d="M27 2l-3 18h4.5l3-18Z" />
-      <path fill={C.paper} d="M7 16h34l-4 42q-.5 4-4.5 4h-17q-4 0-4.5-4Z" />
-      <clipPath id={`clip-${garnish}`}>
-        <path d="M8.5 20h31l-3.6 38q-.4 2.8-3.4 2.8h-17q-3 0-3.4-2.8Z" />
-      </clipPath>
-      <g clipPath={`url(#clip-${garnish})`}>
-        <rect x="0" y={garnish === "foam" ? 26 : 22} width="48" height="42" fill={liquid} />
-        {garnish === "layer" && <rect x="0" y="44" width="48" height="20" fill="#fbf3e2" />}
-        {garnish === "foam" && <path fill="#fbf3e2" d="M0 20h48v8q-4 3-8 0t-8 0-8 0-8 0-8 0-8 0Z" />}
-        {milk && garnish !== "layer" && <path fill="#fff" fillOpacity=".5" d="M6 34q8-4 16 0t18 0v5q-9 4-18 0t-16 1Z" />}
-        {garnish === "boba" && (
-          <g fill={C.boba}>
-            <circle cx="16" cy="56" r="3.4" />
-            <circle cx="24" cy="57" r="3.4" />
-            <circle cx="32" cy="56" r="3.4" />
-            <circle cx="20" cy="51" r="3.4" />
-            <circle cx="28" cy="51" r="3.4" />
-          </g>
+      <g filter={hand("icon")}>
+        <path {...s} fill={C.pink} d="M27 2l-3 18h4.5l3-18Z" />
+        <path fill={C.paper} d="M7 16h34l-4 42q-.5 4-4.5 4h-17q-4 0-4.5-4Z" />
+        <clipPath id={`clip-${garnish}`}>
+          <path d="M8.5 20h31l-3.6 38q-.4 2.8-3.4 2.8h-17q-3 0-3.4-2.8Z" />
+        </clipPath>
+        <g clipPath={`url(#clip-${garnish})`}>
+          <rect x="0" y={garnish === "foam" ? 26 : 22} width="48" height="42" fill={liquid} />
+          {garnish === "layer" && <rect x="0" y="44" width="48" height="20" fill="#fbf3e2" />}
+          {garnish === "foam" && <path fill="#fbf3e2" d="M0 20h48v8q-4 3-8 0t-8 0-8 0-8 0-8 0-8 0Z" />}
+          {milk && garnish !== "layer" && <path fill="#fff" fillOpacity=".4" d="M6 30q8-4 16 0t18 0v4q-9 4-18 0t-16 1Z" />}
+          {garnish === "boba" && (
+            <g fill={C.boba}>
+              <circle cx="16" cy="56" r="3.4" />
+              <circle cx="24" cy="57" r="3.4" />
+              <circle cx="32" cy="56" r="3.4" />
+              <circle cx="20" cy="51" r="3.4" />
+              <circle cx="28" cy="51" r="3.4" />
+            </g>
+          )}
+          {garnish === "citrus" && (
+            <g {...s} strokeWidth={1.6}>
+              <circle cx="20" cy="42" r="7" fill={C.butter} />
+              <circle cx="20" cy="42" r="4.3" fill="#fff6cf" />
+            </g>
+          )}
+        </g>
+        <path {...s} fill="none" d="M7 16h34l-4 42q-.5 4-4.5 4h-17q-4 0-4.5-4Z" />
+        <rect {...s} x="4" y="13" width="40" height="6" rx="3" fill={C.paper} />
+        {garnish === "citrus" && <path {...s} strokeWidth={1.8} fill={C.butterDeep} d="M36 13a7 7 0 0 1 10-6" />}
+        {garnish === "sparkle" && (
+          <path {...s} strokeWidth={1.6} fill={C.butter} d="M41 3c.5 4 1.5 5.5 6 6.5-4.5 1-5.5 2.5-6 6.5-.5-4-1.5-5.5-6-6.5 4.5-1 5.5-2.5 6-6.5Z" />
         )}
-        {garnish === "citrus" && (
-          <g {...s} strokeWidth={1.6}>
-            <circle cx="20" cy="42" r="7" fill={C.butter} />
-            <circle cx="20" cy="42" r="4.3" fill="#fff6cf" />
-          </g>
-        )}
+        <circle {...s} strokeWidth={1.4} cx="24" cy="40" r="5" fill="#fff" />
+        <circle cx="23.6" cy="40.2" r="2.1" fill={C.mascotBody} />
       </g>
-      <path {...s} fill="none" d="M7 16h34l-4 42q-.5 4-4.5 4h-17q-4 0-4.5-4Z" />
-      <rect {...s} x="4" y="13" width="40" height="6" rx="3" fill={C.paper} />
-      {garnish === "citrus" && <path {...s} strokeWidth={1.8} fill={C.butterDeep} d="M36 13a7 7 0 0 1 10-6" />}
-      {garnish === "sparkle" && (
-        <path {...s} strokeWidth={1.6} fill={C.butter} d="M41 3c.5 4 1.5 5.5 6 6.5-4.5 1-5.5 2.5-6 6.5-.5-4-1.5-5.5-6-6.5 4.5-1 5.5-2.5 6-6.5Z" />
-      )}
-      <path stroke="#fff" strokeWidth="2.4" strokeLinecap="round" d="M12 24l3 30" opacity=".7" />
     </svg>
   );
 }
@@ -49,7 +54,9 @@ export function DrinkIcon({ drink, className = "h-16 w-12" }: { drink: Pick<Drin
 export function ToppingIcon({ kind, className = "h-14 w-14" }: { kind: ToppingKind; className?: string }) {
   return (
     <svg viewBox="0 0 56 56" className={className} aria-hidden overflow="visible">
-      <g {...s}>{toppingArt[kind]}</g>
+      <g {...s} filter={hand("icon")}>
+        {toppingArt[kind]}
+      </g>
     </svg>
   );
 }
@@ -66,10 +73,7 @@ const toppingArt: Record<ToppingKind, React.ReactNode> = {
         [32, 19],
         [27, 12],
       ].map(([x, y]) => (
-        <g key={`${x}${y}`}>
-          <circle cx={x} cy={y} r="5.2" fill={C.boba} />
-          <circle cx={x - 1.6} cy={y - 1.6} r="1.3" fill="#fff" stroke="none" opacity=".6" />
-        </g>
+        <circle key={`${x}${y}`} cx={x} cy={y} r="5.2" fill={C.boba} />
       ))}
     </>
   ),
@@ -78,7 +82,6 @@ const toppingArt: Record<ToppingKind, React.ReactNode> = {
       <rect x="9" y="22" width="18" height="18" rx="4" fill="#e3f0d2" transform="rotate(-10 18 31)" />
       <rect x="26" y="14" width="18" height="18" rx="4" fill="#e3f0d2" transform="rotate(12 35 23)" />
       <rect x="25" y="32" width="15" height="15" rx="3.5" fill="#d4e8bd" transform="rotate(-4 32 39)" />
-      <path fill="none" stroke="#fff" strokeWidth="2.2" d="M13 27l4-1M30 18l4 1" />
     </>
   ),
   pudding: (
@@ -115,12 +118,14 @@ const toppingArt: Record<ToppingKind, React.ReactNode> = {
 export function CustomIcon({ id, className = "h-14 w-14", accent = C.pinkDeep }: { id: CustomizationId; className?: string; accent?: string }) {
   return (
     <svg viewBox="0 0 56 56" className={className} aria-hidden overflow="visible">
-      <g {...s}>
+      <g {...s} filter={hand("icon")}>
         {id === "sticker" && (
           <>
             <circle cx="28" cy="28" r="20" fill="#fff" />
-            <circle cx="28" cy="28" r="15" fill="none" stroke={accent} strokeWidth={1.6} strokeDasharray="2.5 3" />
-            <path fill={C.pink} d="M28 36c-6-4-9-7-9-11 0-3 2-5 4.5-5 2 0 3.4 1.2 4.5 2.6 1.1-1.4 2.5-2.6 4.5-2.6 2.5 0 4.5 2 4.5 5 0 4-3 7-9 11Z" />
+            <circle cx="28" cy="28" r="15.5" fill="none" stroke={accent} strokeWidth={1.6} strokeDasharray="2.5 3" />
+            <g transform="translate(17.5 16.5) scale(.031)">
+              <MascotArt tone="color" bubbles={false} />
+            </g>
             <path fill={C.cream} d="M42 40c-4 3-3-5-9-3 3-5 7-3 9 3Z" />
           </>
         )}
@@ -175,7 +180,9 @@ export function CustomIcon({ id, className = "h-14 w-14", accent = C.pinkDeep }:
 export function FlavourIcon({ id, className = "h-12 w-12" }: { id: FlavourId; className?: string }) {
   return (
     <svg viewBox="0 0 56 56" className={className} aria-hidden overflow="visible">
-      <g {...s}>{flavourArt[id]}</g>
+      <g {...s} filter={hand("icon")}>
+        {flavourArt[id]}
+      </g>
     </svg>
   );
 }

@@ -40,7 +40,7 @@ export function FinalCTA() {
                 <Mascot className="h-auto w-full -scale-x-100" hat expression="wink" float title="The MolaMola fish, winking" />
               </Parallax>
               <Parallax speed={0.3} className="w-[54%]">
-                <Cup layers={full} liquid="#f6b98a" toppingKinds={["boba", "fruit"]} label="for you!" title="A finished MolaMola drink" />
+                <Cup layers={full} liquid="#f6b98a" toppingKinds={["boba", "fruit"]} title="A finished MolaMola drink" />
               </Parallax>
             </div>
           </div>

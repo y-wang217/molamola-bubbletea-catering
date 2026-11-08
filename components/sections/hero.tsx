@@ -51,7 +51,6 @@ export function Hero() {
   };
   const hintOpacity = useTransform(p, [0, 0.08], [1, 0]);
   const blobY = useTransform(p, [0, 1], [0, -40]);
-  const cupScale = useTransform(p, [0, 1], [0.95, 1]);
   const fishX = useTransform(p, [0.66, 0.8], [-50, 0]);
   const fishOpacity = useTransform(p, [0.66, 0.76], [0, 1]);
 
@@ -94,9 +93,9 @@ export function Hero() {
             <motion.div aria-hidden style={{ x: fishX, opacity: fishOpacity }} className="absolute -right-[22%] bottom-[4%] w-[46%]">
               <Mascot className="h-auto w-full -scale-x-100 rotate-[8deg]" hat float title="" />
             </motion.div>
-            <motion.div style={{ scale: cupScale }} className="relative">
+            <div className="relative">
               <Cup layers={layers} liquid="#d9a77c" toppingKinds={["boba"]} title="A MolaMola milk tea filling up as you scroll" />
-            </motion.div>
+            </div>
 
 
             {sparkles.map((s, i) => (

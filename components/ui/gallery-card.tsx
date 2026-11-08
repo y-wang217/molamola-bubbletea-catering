@@ -33,9 +33,9 @@ export function GalleryCard({ item, index = 0 }: { item: GalleryItem; index?: nu
         {item.image ? (
           <Image src={item.image} alt={item.alt} fill sizes="(min-width: 1024px) 25vw, (min-width: 640px) 45vw, 90vw" className="object-cover" />
         ) : (
-          <div className="dot-grid flex h-full w-full flex-col items-center justify-center gap-2" role="img" aria-label={`${item.alt} (photo coming soon)`}>
-            <Illustration kind={item.placeholder} className="h-1/2 w-1/2" />
-            <span className="rounded-full bg-paper/80 px-2.5 py-0.5 text-[11px] font-semibold tracking-wide text-cocoa uppercase">photo placeholder</span>
+          <div className="flex h-full w-full flex-col items-center justify-center gap-1 bg-paper/50" role="img" aria-label={`${item.alt} (photo coming soon)`}>
+            <Illustration kind={item.placeholder} className="art-sketch h-1/2 w-1/2" />
+            <span className="font-hand text-lg leading-none text-cocoa">photo coming soon</span>
           </div>
         )}
         {index % 3 === 0 && <DoodleDecoration kind="heart" className="absolute right-3 bottom-3 h-7 w-7" motion="bob" delay={index * 0.3} />}

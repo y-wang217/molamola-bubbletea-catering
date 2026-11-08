@@ -47,7 +47,8 @@ export function BuildYourBar({ tabIndex = "02" }: { tabIndex?: string }) {
   const liquid = flavour.tint ? mixHex(drink.liquid, flavour.tint, 0.6) : drink.liquid;
   const drinkLabel = flavour.tint ? `${flavour.name} ${drink.name}` : drink.name;
   const has = (id: CustomizationId) => extras.includes(id);
-  const showSticker = active >= 2 && (has("sticker") || has("branding"));
+  // The cup gets its sticker in step 3: the real MolaMola logo by default, or a custom/branded one.
+  const showSticker = active >= 2;
   const layers = useCupLayers({
     tea: 1,
     ice: 1,
@@ -95,7 +96,7 @@ export function BuildYourBar({ tabIndex = "02" }: { tabIndex?: string }) {
                     label={label}
                     strawColor={colourOn ? swatch : C.pink}
                     accent={colourOn ? swatch : C.pinkDeep}
-                    stickerMode={has("branding") ? "logo" : "mascot"}
+                    stickerMode={has("branding") ? "logo" : has("sticker") && stickerText.trim() ? "custom" : "brand"}
                     title={`Your ${drinkLabel} with ${picked.join(", ") || "no toppings"}`}
                   />
                 </div>
@@ -145,7 +146,7 @@ export function BuildYourBar({ tabIndex = "02" }: { tabIndex?: string }) {
                     <motion.div key="theme" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="pointer-events-none absolute inset-0 hidden lg:block">
                       <DoodleDecoration kind="star" className="absolute -top-6 -left-8 h-9 w-9" motion="twinkle" />
                       <DoodleDecoration kind="heart" className="absolute top-1/3 -right-12 h-8 w-8" motion="bob" />
-                      <DoodleDecoration kind="flower" className="absolute -top-10 right-6 h-8 w-8" motion="float" />
+                      <DoodleDecoration kind="flower" className="absolute top-[18%] -left-12 h-8 w-8" motion="float" />
                       <DoodleDecoration kind="sparkle" className="absolute top-1/2 -left-10 h-7 w-7" motion="twinkle" delay={1} />
                     </motion.div>
                   )}

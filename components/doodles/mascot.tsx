@@ -1,3 +1,4 @@
+import { hand } from "./art-defs";
 import { C } from "./palette";
 
 /**
@@ -103,7 +104,9 @@ export function Mascot({
       overflow="visible"
     >
       {title && <title>{title}</title>}
-      <MascotArt tone={tone} bubbles={bubbles} hat={hat} expression={expression} />
+      <g filter={hand("fish")}>
+        <MascotArt tone={tone} bubbles={bubbles} hat={hat} expression={expression} />
+      </g>
     </svg>
   );
 }

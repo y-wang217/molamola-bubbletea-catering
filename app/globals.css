@@ -122,3 +122,11 @@ body {
 /* Hide scrollbar on snap carousels while keeping them scrollable. */
 .no-scrollbar { scrollbar-width: none; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* Pencil-sketch version of an illustration (gallery placeholders until real photos arrive). */
+.art-sketch :is(path, circle, ellipse, rect, polygon):not([fill="none"]) {
+  fill: var(--color-paper);
+}
+.art-sketch {
+  opacity: 0.85;
+}

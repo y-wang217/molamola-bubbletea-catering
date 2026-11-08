@@ -3,6 +3,7 @@ import { Bricolage_Grotesque, Caveat, Figtree } from "next/font/google";
 import { Nav } from "@/components/layout/nav";
 import { Footer } from "@/components/layout/footer";
 import { MotionProvider } from "@/components/ui/motion";
+import { ArtDefs } from "@/components/doodles/art-defs";
 import { brand } from "@/content/site";
 import "./globals.css";
 
@@ -22,6 +23,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[60] focus:rounded-full focus:bg-paper focus:px-4 focus:py-2">
           Skip to content
         </a>
+        <ArtDefs />
         <MotionProvider>
           <Nav />
           <main id="main">{children}</main>

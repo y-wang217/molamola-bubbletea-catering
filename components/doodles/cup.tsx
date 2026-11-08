@@ -3,6 +3,7 @@
 import { animate, motion, useMotionValue, useReducedMotion, useTransform, type MotionValue } from "motion/react";
 import { useEffect, useId } from "react";
 import type { ToppingKind } from "@/content/drinks";
+import { hand } from "./art-defs";
 import { MascotArt } from "./mascot";
 import { C, stroke } from "./palette";
 
@@ -42,26 +43,42 @@ type CupProps = {
   layers: CupLayers;
   liquid?: string;
   toppingKinds?: ToppingKind[];
+  /** Text for a custom sticker (only used when stickerMode is "custom"). */
   label?: string;
   /** Straw colour (e.g. wedding colours). */
   strawColor?: string;
-  /** Dashed ring on the sticker. */
+  /** Outline colour of the sticker (e.g. wedding colours). */
   accent?: string;
-  /** "mascot" = MolaMola fish sticker, "logo" = corporate logo placeholder. */
-  stickerMode?: "mascot" | "logo";
+  /**
+   * "brand"  = the real MolaMola colour logo as the cup sticker (default)
+   * "custom" = a custom name sticker with the line-art fish from the logo
+   * "logo"   = corporate logo placeholder
+   */
+  stickerMode?: "brand" | "custom" | "logo" | "mascot";
   className?: string;
   title?: string;
 };
 
+// Hand-placed, slightly uneven, like they were dropped in.
 const BOBA: [number, number][] = [
-  [78, 266], [94, 268], [110, 269], [126, 268], [142, 265],
-  [86, 252], [102, 254], [118, 254], [134, 251], [72, 252], [148, 251], [110, 240],
+  [77, 265], [93, 268], [109, 266], [125, 269], [141, 264],
+  [85, 252], [101, 253], [117, 251], [133, 254], [148, 249], [70, 250], [109, 239],
 ];
 const ALOE: [number, number, number][] = [
   [80, 236, -12], [104, 228, 8], [128, 238, 18], [146, 222, -6], [92, 214, 22],
 ];
 
-/** Layered takeaway cup. Every layer is driven by a motion value so it can follow scroll or state. */
+// Gently uneven cup shape (drawn, not ruled).
+const CUP_OUTLINE = "M36 74C43 140 51 210 60 268Q62 281 74 281L147 282Q157 281 159 269C168 210 176 142 184 74";
+const CUP_BODY = "M36 74C43 140 51 210 60 268Q62 281 74 281L147 282Q157 281 159 269C168 210 176 142 184 74Z";
+const CUP_INSIDE = "M40 79C47 142 55 210 63 266Q65 277 75 277L146 278Q154 277 156 266C164 210 172 144 180 79Z";
+const LID = "M27 63Q26 76 37 77L185 76Q195 75 194 63Q193 55 183 56L37 57Q27 57 27 63Z";
+
+/**
+ * Layered takeaway cup in the MolaMola hand-drawn style. Every layer is driven by a motion
+ * value so it can follow scroll or state. Static art (straw, cup, outline, lid, grain) sits
+ * on its own layers so the hand-drawn filter is painted once, not on every animation frame.
+ */
 export function Cup({
   layers,
   liquid = "#d9a77c",
@@ -69,122 +86,133 @@ export function Cup({
   label = "mola mola",
   strawColor = C.pink,
   accent = C.pinkDeep,
-  stickerMode = "mascot",
+  stickerMode = "brand",
   className = "w-full",
   title = "A MolaMola drink",
 }: CupProps) {
-  const teaY = useTransform(layers.tea, (v) => (1 - v) * 200);
+  const teaY = useTransform(layers.tea, (v) => (1 - v) * 205);
   const iceY = useTransform(layers.ice, (v) => (1 - v) * -90);
   const topY = useTransform(layers.toppings, (v) => (1 - v) * -120);
   const stickerScale = useTransform(layers.sticker, [0, 1], [0.4, 1]);
-  const stickerRotate = useTransform(layers.sticker, [0, 1], [-40, -8]);
+  const stickerRotate = useTransform(layers.sticker, [0, 1], [-40, -7]);
   const has = (k: ToppingKind) => toppingKinds.includes(k);
-  const clipId = `cup-${useId().replace(/[^a-zA-Z0-9_-]/g, "")}`;
+  const uid = useId().replace(/[^a-zA-Z0-9_-]/g, "");
+  const mode = stickerMode === "mascot" ? "brand" : stickerMode;
+  const layer = "absolute inset-0 h-full w-full";
 
   return (
-    <svg viewBox="0 0 220 300" role="img" className={className} overflow="visible">
-      <title>{title}</title>
-      <defs>
-        <clipPath id={clipId}>
-          <path d="M39 78 L62 270 Q64 279 73 279 L147 279 Q156 279 158 270 L181 78 Z" />
-        </clipPath>
-      </defs>
+    <div role="img" aria-label={title} className={`relative ${className}`}>
+      {/* back: straw + cup body (static, hand-drawn filter) */}
+      <svg viewBox="0 0 220 300" aria-hidden className="block h-auto w-full [will-change:transform]" overflow="visible">
+        <g filter={hand("cup")} {...stroke} strokeWidth={3}>
+          <path d="M113 104 L132 4 Q141 1 149 6 L129 107 Z" style={{ fill: strawColor, transition: "fill .5s ease" }} />
+          <path fill={C.paper} stroke="none" opacity=".8" d={CUP_BODY} />
+        </g>
+      </svg>
 
-      {/* straw (behind the cup) */}
-      <g {...stroke} strokeWidth={3}>
-        <path d="M114 104 L134 4 L150 7 L130 107 Z" style={{ fill: strawColor, transition: "fill .5s ease" }} />
-        <path fill="none" stroke="#fff" strokeWidth={3} d="M139 18 L132 52" opacity=".7" />
-      </g>
-
-      {/* cup body */}
-      <path fill={C.paper} opacity=".72" d="M36 74 L60 272 Q62 282 72 282 L148 282 Q158 282 160 272 L184 74 Z" />
-
-      <g clipPath={`url(#${clipId})`}>
-        {/* tea + milk rise together */}
-        <motion.g style={{ y: teaY }}>
-          <path
-            d="M0 100 q 27.5 -9 55 0 t 55 0 t 55 0 t 55 0 V 320 H0 Z"
-            style={{ fill: liquid, transition: "fill .6s ease" }}
-          />
-          <motion.g style={{ opacity: layers.milk }} fill="#fff">
-            <path d="M48 128 c 22 -10 40 12 64 2 s 40 -14 60 0 l 0 14 c -22 -8 -40 12 -62 4 s -42 -6 -62 -2 Z" fillOpacity=".55" />
-            <path d="M60 170 c 18 -8 30 8 50 2 s 34 -10 50 0 l -2 10 c -18 -6 -32 8 -50 2 s -32 -4 -48 0 Z" fillOpacity=".4" />
+      {/* middle: the drink itself (animated) */}
+      <svg viewBox="0 0 220 300" aria-hidden className={layer} overflow="visible">
+        <defs>
+          <clipPath id={`in-${uid}`}>
+            <path d={CUP_INSIDE} />
+          </clipPath>
+        </defs>
+        <g clipPath={`url(#in-${uid})`}>
+          <motion.g style={{ y: teaY }}>
+            <path d="M0 98q30-8 58-1t58 0 58-1 58 2V330H0Z" style={{ fill: liquid, transition: "fill .6s ease" }} />
+            {/* soft lighter band at the top, like a watercolour wash */}
+            <path d="M0 98q30-8 58-1t58 0 58-1 58 2v26q-30 6-58 1t-58 0-58 1-58-2Z" fill="#fff" opacity=".22" />
+            <motion.path style={{ opacity: layers.milk }} fill="#fff" fillOpacity=".38" d="M46 150c22-9 38 9 62 2s40-12 62-1v13c-22-8-40 10-62 3s-40-6-62 0Z" />
           </motion.g>
-        </motion.g>
 
-        {/* ice */}
-        <motion.g style={{ y: iceY, opacity: layers.ice }} {...stroke} strokeWidth={2}>
-          <rect x="62" y="104" width="34" height="32" rx="7" fill="#fff" fillOpacity=".55" transform="rotate(-12 79 120)" />
-          <rect x="108" y="98" width="34" height="32" rx="7" fill="#fff" fillOpacity=".55" transform="rotate(10 125 114)" />
-          <rect x="128" y="138" width="30" height="28" rx="6" fill="#fff" fillOpacity=".5" transform="rotate(-6 143 152)" />
-          <path fill="none" stroke="#fff" strokeWidth={2.5} d="M70 112 l8 -2 M114 106 l8 2" />
-        </motion.g>
+          <motion.g style={{ y: iceY, opacity: layers.ice }} {...stroke} strokeWidth={2}>
+            <rect x="62" y="104" width="33" height="31" rx="8" fill="#e6f3ff" fillOpacity=".85" transform="rotate(-12 79 120)" />
+            <rect x="108" y="98" width="33" height="31" rx="8" fill="#e6f3ff" fillOpacity=".85" transform="rotate(9 125 114)" />
+            <rect x="128" y="138" width="29" height="27" rx="7" fill="#e6f3ff" fillOpacity=".8" transform="rotate(-6 143 152)" />
+          </motion.g>
 
-        {/* toppings */}
-        <motion.g style={{ y: topY, opacity: layers.toppings }}>
-          {has("pudding") && (
-            <g {...stroke} strokeWidth={2.2}>
-              <rect x="70" y="244" width="80" height="34" rx="12" fill="#f6dc8e" />
-              <path fill="#d9a066" d="M74 252 q 36 -12 72 0 q -36 8 -72 0 Z" />
-            </g>
-          )}
-          {has("boba") &&
-            BOBA.map(([x, y], i) => (
-              <g key={i}>
-                <circle cx={x} cy={y} r="8" fill={C.boba} stroke={C.ink} strokeWidth={1.6} />
-                <circle cx={x - 2.5} cy={y - 2.5} r="2" fill="#fff" opacity=".6" />
+          <motion.g style={{ y: topY, opacity: layers.toppings }}>
+            {has("pudding") && (
+              <g {...stroke} strokeWidth={2.2}>
+                <rect x="70" y="244" width="80" height="34" rx="13" fill="#f8e09a" />
+                <path fill="#dca56c" d="M74 252q36-12 72 0q-36 8-72 0Z" />
               </g>
-            ))}
-          {has("aloe") &&
-            ALOE.map(([x, y, r], i) => (
-              <rect key={i} x={x - 7} y={y - 7} width="14" height="14" rx="3.5" fill="#e3f0d2" fillOpacity=".85" stroke={C.ink} strokeWidth={1.5} transform={`rotate(${r} ${x} ${y})`} />
-            ))}
-          {has("fruit") && (
-            <g {...stroke} strokeWidth={2}>
-              <path fill="#f49aa6" d="M70 184 c -4 -14 8 -22 18 -16 c 8 6 6 18 -4 22 c -6 2 -12 0 -14 -6 Z" />
-              <circle cx="140" cy="196" r="13" fill={C.butter} />
-              <circle cx="140" cy="196" r="8.5" fill="#fff6cf" strokeWidth={1.3} />
-              <path fill="#f49aa6" d="M112 210 c -6 -10 4 -18 12 -14 c 8 4 6 14 -2 18 c -4 2 -8 0 -10 -4 Z" />
-            </g>
-          )}
-          {has("float") && (
-            <path
-              {...stroke}
-              strokeWidth={2.2}
-              fill={C.paper}
-              d="M36 78 H184 V112 q -12 10 -24 2 q -12 10 -26 2 q -12 10 -26 2 q -12 10 -26 2 q -12 10 -24 2 q -10 8 -22 0 Z"
-            />
-          )}
-        </motion.g>
-      </g>
+            )}
+            {has("boba") &&
+              BOBA.map(([x, y], i) => <circle key={i} cx={x} cy={y} r="7.6" fill={C.boba} stroke={C.ink} strokeWidth={1.4} />)}
+            {has("aloe") &&
+              ALOE.map(([x, y, r], i) => (
+                <rect key={i} x={x - 7} y={y - 7} width="14" height="14" rx="4" fill="#e4f1d4" fillOpacity=".9" stroke={C.ink} strokeWidth={1.4} transform={`rotate(${r} ${x} ${y})`} />
+              ))}
+            {has("fruit") && (
+              <g {...stroke} strokeWidth={2}>
+                <path fill="#f6a3b0" d="M70 184c-4-14 8-22 18-16 8 6 6 18-4 22-6 2-12 0-14-6Z" />
+                <circle cx="140" cy="196" r="13" fill={C.butter} />
+                <path fill="none" strokeWidth={1.4} d="M140 185v22M129 196h22" />
+                <path fill="#f6a3b0" d="M112 210c-6-10 4-18 12-14 8 4 6 14-2 18-4 2-8 0-10-4Z" />
+              </g>
+            )}
+            {has("float") && (
+              <path {...stroke} strokeWidth={2.2} fill={C.paper} d="M36 78H184V110q-12 10-24 2q-12 10-26 2q-12 10-26 2q-12 10-26 2q-12 10-24 2q-10 8-22 0Z" />
+            )}
+          </motion.g>
+        </g>
+      </svg>
 
-      {/* outline + glare */}
-      <path {...stroke} strokeWidth={3.2} fill="none" d="M36 74 L60 272 Q62 282 72 282 L148 282 Q158 282 160 272 L184 74 Z" />
-      <path fill="none" stroke="#fff" strokeWidth={4} strokeLinecap="round" d="M52 102 L70 252" opacity=".7" />
-
-      {/* lid */}
-      <rect {...stroke} strokeWidth={3.2} x="26" y="60" width="168" height="18" rx="9" fill={C.paper} />
+      {/* top: outline, lid and paper grain (static, hand-drawn filter) */}
+      <svg viewBox="0 0 220 300" aria-hidden className={`${layer} [will-change:transform]`} overflow="visible">
+        <defs>
+          <clipPath id={`grain-${uid}`}>
+            <path d={CUP_INSIDE} />
+          </clipPath>
+        </defs>
+        <rect x="30" y="70" width="160" height="215" fill="#fff" clipPath={`url(#grain-${uid})`} filter="url(#mm-grain)" />
+        <g filter={hand("cup")} {...stroke} strokeWidth={3.2}>
+          <path fill="none" d={CUP_OUTLINE} />
+          <path fill="#fff6e4" d={LID} />
+          <path fill="none" strokeWidth={1.6} opacity=".5" d="M40 66q72 3 140-1" />
+        </g>
+      </svg>
 
       {/* sticker */}
-      <motion.g style={{ opacity: layers.sticker, scale: stickerScale, rotate: stickerRotate }}>
-        <circle cx="110" cy="190" r="38" fill="#fff" {...stroke} strokeWidth={2.6} />
-        <circle cx="110" cy="190" r="31" fill="none" strokeWidth={1.6} strokeDasharray="3 4" style={{ stroke: accent, transition: "stroke .5s ease" }} />
-        {stickerMode === "mascot" ? (
-          <g transform="translate(88.4 154) scale(.06)">
-            <MascotArt bubbles={false} />
-          </g>
-        ) : (
-          <g>
-            <rect x="88" y="160" width="44" height="34" rx="9" fill={C.blue} {...stroke} strokeWidth={2} />
-            <text x="110" y="182" textAnchor="middle" fill={C.ink} style={{ font: "800 11px var(--font-display)", letterSpacing: "0.04em" }}>
-              LOGO
-            </text>
-          </g>
-        )}
-        <text x="110" y="214" textAnchor="middle" fill={C.ink} style={{ fontFamily: "var(--font-hand)", fontSize: label.length > 12 ? 13 : 16, fontWeight: 700 }}>
-          {label}
-        </text>
-      </motion.g>
-    </svg>
+      <svg viewBox="0 0 220 300" aria-hidden className={layer} overflow="visible">
+        <motion.g style={{ opacity: layers.sticker, scale: stickerScale, rotate: stickerRotate }}>
+          {mode === "brand" ? (
+            <>
+              <path
+                fill="#fff"
+                d="M110 152c24 0 43 17 43 39s-19 40-43 40-43-17-43-40 19-39 43-39Z"
+                stroke={C.ink}
+                strokeWidth={2.2}
+                style={{ stroke: accent === C.pinkDeep ? C.ink : accent, transition: "stroke .5s ease" }}
+              />
+              <image href="/brand/molamola-sticker.png" x="72" y="160" width="76" height="64" preserveAspectRatio="xMidYMid meet" />
+            </>
+          ) : (
+            <>
+              <circle cx="110" cy="190" r="38" fill="#fff" {...stroke} strokeWidth={2.4} />
+              <circle cx="110" cy="190" r="31" fill="none" strokeWidth={1.6} strokeDasharray="3 4" style={{ stroke: accent, transition: "stroke .5s ease" }} />
+              {mode === "custom" ? (
+                <>
+                  <g transform="translate(91 157) scale(.055)">
+                    <MascotArt tone="line" bubbles={false} />
+                  </g>
+                  <text x="110" y="214" textAnchor="middle" fill={C.ink} style={{ fontFamily: "var(--font-hand)", fontSize: label.length > 12 ? 13 : 16, fontWeight: 700 }}>
+                    {label}
+                  </text>
+                </>
+              ) : (
+                <g>
+                  <rect x="88" y="173" width="44" height="34" rx="9" fill={C.blue} {...stroke} strokeWidth={2} />
+                  <text x="110" y="195" textAnchor="middle" fill={C.ink} style={{ font: "800 11px var(--font-display)", letterSpacing: "0.04em" }}>
+                    LOGO
+                  </text>
+                </g>
+              )}
+            </>
+          )}
+        </motion.g>
+      </svg>
+    </div>
   );
 }
