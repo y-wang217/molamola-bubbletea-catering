@@ -2,7 +2,7 @@
 
 import { motion, useMotionValue, useMotionValueEvent, useScroll, useTransform } from "motion/react";
 import { useRef, useState, type ReactNode } from "react";
-import { customizations, drinkCategories, toppings } from "@/content/drinks";
+import { customizations, drinkCategories, recipes, toppings } from "@/content/drinks";
 import { Cup, type CupLayers } from "@/components/doodles/cup";
 import { CustomIcon, DrinkIcon, ToppingIcon } from "@/components/doodles/ingredients";
 import { DoodleDecoration } from "@/components/doodles/doodle";
@@ -61,7 +61,7 @@ export function DrinkJourney() {
           <div className="relative order-first mx-auto w-44 sm:w-52 lg:order-2 lg:w-64">
             <WatercolorBlob color={C.pink} spots={C.butter} className="absolute inset-[-22%] h-[144%] w-[144%] opacity-55" seed={5} />
             <div className="relative">
-              <Cup layers={layers} liquid={drinkCategories[1].liquid} toppingKinds={["boba", "float"]} title="A cup being built step by step" />
+              <Cup layers={layers} recipe={recipes.strawberryMatcha} top="float" title="A strawberry matcha latte with creamy float topping, built step by step" />
             </div>
             <motion.div style={{ opacity: layers.sticker }} className="absolute -top-4 -right-6">
               <DoodleDecoration kind="sparkle" className="h-9 w-9" motion="twinkle" />

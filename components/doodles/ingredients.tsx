@@ -1,53 +1,14 @@
 import type { CustomizationId, DrinkCategory, FlavourId, ToppingKind } from "@/content/drinks";
 import { hand } from "./art-defs";
+import { MiniDrink } from "./drink-art";
 import { MascotArt } from "./mascot";
 import { C, stroke } from "./palette";
 
 const s = { ...stroke, strokeWidth: 2.2 };
 
-/** A small illustrated cup for each drink category. */
-export function DrinkIcon({ drink, className = "h-16 w-12" }: { drink: Pick<DrinkCategory, "liquid" | "milk" | "garnish">; className?: string }) {
-  const { liquid, milk, garnish } = drink;
-  return (
-    <svg viewBox="0 0 48 64" className={className} aria-hidden overflow="visible">
-      <g filter={hand("icon")}>
-        <path {...s} fill={C.pink} d="M27 2l-3 18h4.5l3-18Z" />
-        <path fill={C.paper} d="M7 16h34l-4 42q-.5 4-4.5 4h-17q-4 0-4.5-4Z" />
-        <clipPath id={`clip-${garnish}`}>
-          <path d="M8.5 20h31l-3.6 38q-.4 2.8-3.4 2.8h-17q-3 0-3.4-2.8Z" />
-        </clipPath>
-        <g clipPath={`url(#clip-${garnish})`}>
-          <rect x="0" y={garnish === "foam" ? 26 : 22} width="48" height="42" fill={liquid} />
-          {garnish === "layer" && <rect x="0" y="44" width="48" height="20" fill="#fbf3e2" />}
-          {garnish === "foam" && <path fill="#fbf3e2" d="M0 20h48v8q-4 3-8 0t-8 0-8 0-8 0-8 0-8 0Z" />}
-          {milk && garnish !== "layer" && <path fill="#fff" fillOpacity=".4" d="M6 30q8-4 16 0t18 0v4q-9 4-18 0t-16 1Z" />}
-          {garnish === "boba" && (
-            <g fill={C.boba}>
-              <circle cx="16" cy="56" r="3.4" />
-              <circle cx="24" cy="57" r="3.4" />
-              <circle cx="32" cy="56" r="3.4" />
-              <circle cx="20" cy="51" r="3.4" />
-              <circle cx="28" cy="51" r="3.4" />
-            </g>
-          )}
-          {garnish === "citrus" && (
-            <g {...s} strokeWidth={1.6}>
-              <circle cx="20" cy="42" r="7" fill={C.butter} />
-              <circle cx="20" cy="42" r="4.3" fill="#fff6cf" />
-            </g>
-          )}
-        </g>
-        <path {...s} fill="none" d="M7 16h34l-4 42q-.5 4-4.5 4h-17q-4 0-4.5-4Z" />
-        <rect {...s} x="4" y="13" width="40" height="6" rx="3" fill={C.paper} />
-        {garnish === "citrus" && <path {...s} strokeWidth={1.8} fill={C.butterDeep} d="M36 13a7 7 0 0 1 10-6" />}
-        {garnish === "sparkle" && (
-          <path {...s} strokeWidth={1.6} fill={C.butter} d="M41 3c.5 4 1.5 5.5 6 6.5-4.5 1-5.5 2.5-6 6.5-.5-4-1.5-5.5-6-6.5 4.5-1 5.5-2.5 6-6.5Z" />
-        )}
-        <circle {...s} strokeWidth={1.4} cx="24" cy="40" r="5" fill="#fff" />
-        <circle cx="23.6" cy="40.2" r="2.1" fill={C.mascotBody} />
-      </g>
-    </svg>
-  );
+/** A small MolaMola drink for each drink category, drawn from its recipe. */
+export function DrinkIcon({ drink, className = "h-16 w-12" }: { drink: Pick<DrinkCategory, "recipe">; className?: string }) {
+  return <MiniDrink recipe={drink.recipe} className={className} />;
 }
 
 /** Illustrated topping icons. */
@@ -62,54 +23,85 @@ export function ToppingIcon({ kind, className = "h-14 w-14" }: { kind: ToppingKi
 }
 
 const toppingArt: Record<ToppingKind, React.ReactNode> = {
+  // glossy tapioca pearls in a little heap
   boba: (
     <>
-      <path fill={C.paper} d="M8 30h40q0 18-20 18T8 30Z" />
       {[
-        [17, 28],
-        [27, 26],
-        [37, 28],
-        [22, 19],
-        [32, 19],
-        [27, 12],
+        [17, 38],
+        [28, 40],
+        [39, 38],
+        [22, 28],
+        [34, 28],
+        [28, 18],
       ].map(([x, y]) => (
-        <circle key={`${x}${y}`} cx={x} cy={y} r="5.2" fill={C.boba} />
+        <g key={`${x}${y}`}>
+          <circle cx={x} cy={y} r="6.4" fill="#4b2d20" />
+          <ellipse cx={x - 2.2} cy={y - 2.6} rx="1.9" ry="1.3" fill="#fff" stroke="none" opacity=".6" />
+        </g>
       ))}
     </>
   ),
+  // soft pale-green translucent cubes
   aloe: (
     <>
-      <rect x="9" y="22" width="18" height="18" rx="4" fill="#e3f0d2" transform="rotate(-10 18 31)" />
-      <rect x="26" y="14" width="18" height="18" rx="4" fill="#e3f0d2" transform="rotate(12 35 23)" />
-      <rect x="25" y="32" width="15" height="15" rx="3.5" fill="#d4e8bd" transform="rotate(-4 32 39)" />
+      <rect x="9" y="24" width="17" height="17" rx="4.5" fill="#e3f1cf" fillOpacity=".9" transform="rotate(-10 17 32)" />
+      <rect x="27" y="14" width="17" height="17" rx="4.5" fill="#e3f1cf" fillOpacity=".9" transform="rotate(12 35 22)" />
+      <rect x="27" y="33" width="15" height="15" rx="4" fill="#d5e9bd" fillOpacity=".9" transform="rotate(-4 34 40)" />
+      <path stroke="#fff" strokeWidth="2.4" d="M14 29h4M32 18h4" />
     </>
   ),
+  // custard pudding cubes with a caramel top
   pudding: (
     <>
-      <path fill="#f6dc8e" d="M12 44l4-24q12-5 24 0l4 24q-16 5-32 0Z" />
-      <path fill="#d9a066" d="M16 20q12-6 24 0-2 6-12 6t-12-6Z" />
-      <path fill="none" d="M10 46q18 5 36 0" />
+      {[
+        [17, 32, -6],
+        [36, 30, 7],
+        [27, 44, 2],
+      ].map(([x, y, r]) => (
+        <g key={`${x}${y}`} transform={`rotate(${r} ${x} ${y})`}>
+          <rect x={x - 9} y={y - 8} width="18" height="15" rx="4.5" fill="#f9dc8a" />
+          <path d={`M${x - 7} ${y - 5}h14`} stroke="#d99a55" strokeWidth="3.4" />
+        </g>
+      ))}
     </>
   ),
+  // smooth cream cap with a soft cloud-like drip
   float: (
     <>
-      <path fill={C.paper} d="M10 34c-6 0-6-9 0-9 0-8 9-11 13-6 3-7 14-7 15 1 7-1 9 8 3 10 3 6-3 9-8 6-4 4-11 4-14 0-4 3-10 1-9-2Z" />
-      <path fill="none" d="M20 26q4-3 8 0" opacity=".6" />
-      <circle cx="40" cy="14" r="3" fill={C.pink} />
+      <path fill="#d9b48f" d="M14 36h28l-2.4 14q-.5 2-2.5 2H18.9q-2 0-2.5-2Z" />
+      <path
+        fill="#fff8ea"
+        d="M10 30c0-10 8-16 18-16s18 6 18 16v4q0 4-3.5 4-3.5 0-3.5 4.5t-3.5 4.5q-3.5 0-3.5-4.5V39q0-1.5-3-1.5H25q-3 0-3 2.5 0 6-3.5 6T15 40q0-2.5-2.5-2.5Q10 37.5 10 34Z"
+      />
+      <path fill="none" stroke="#fff" strokeWidth="2.6" d="M17 22q4-4 10-4" />
     </>
   ),
+  // custard top with a torched, caramelised surface
+  brulee: (
+    <>
+      <path fill="#d9b48f" d="M13 34h30l-2.6 14q-.4 2-2.4 2H18q-2 0-2.4-2Z" />
+      <path fill="#fae7b6" d="M10 28q0-6 6-6h24q6 0 6 6v4q0 5-5 5H15q-5 0-5-5Z" />
+      <path fill="#dc9140" d="M11 25q2-7 17-7t17 7q-8 4-17 4t-17-4Z" />
+      <g fill="#a85b20" stroke="none">
+        <ellipse cx="22" cy="24" rx="4" ry="1.6" />
+        <ellipse cx="35" cy="22" rx="3.4" ry="1.4" />
+      </g>
+      <path fill="none" stroke="#fff" strokeWidth="1.8" opacity=".7" d="M17 21q6-2.5 12-2.5" />
+    </>
+  ),
+  // strawberry + orange slice
   fruit: (
     <>
-      <path fill="#f49aa6" d="M20 46c-8-4-12-12-11-19 .6-4 4-6 11-6s10.4 2 11 6c1 7-3 15-11 19Z" />
+      <path fill="#ec6475" d="M20 46c-8-4-12-12-11-19 .6-4 4-6 11-6s10.4 2 11 6c1 7-3 15-11 19Z" />
       <path fill={C.sageDeep} d="M14 21c2-4 4-5 6-4.6 2.4-.4 4.6.6 6.6 4.6-2.4 1.6-4.4 1-6.6-.4-2.2 1.4-4.4 2-6 .4Z" />
-      <g fill={C.ink} stroke="none">
-        <circle cx="16" cy="29" r="1" />
-        <circle cx="23" cy="28" r="1" />
-        <circle cx="20" cy="35" r="1" />
+      <g fill="#ffe6a6" stroke="none">
+        <ellipse cx="16" cy="29" rx="1.2" ry="1.7" />
+        <ellipse cx="23" cy="28" rx="1.2" ry="1.7" />
+        <ellipse cx="20" cy="36" rx="1.2" ry="1.7" />
       </g>
-      <circle cx="38" cy="34" r="11" fill={C.butter} />
-      <circle cx="38" cy="34" r="7" fill="#fff6cf" strokeWidth={1.5} />
-      <path strokeWidth={1.5} d="M38 27v14M31 34h14" />
+      <path fill="#ffad4a" d="M28 42a12 12 0 0 1 24 0Z" />
+      <path fill="#ffe0a3" stroke="none" d="M31.5 42a8.5 8.5 0 0 1 17 0Z" />
+      <path strokeWidth={1.3} stroke="#f6a542" d="M40 42v-8M40 42l-6-6M40 42l6-6" />
     </>
   ),
 };

@@ -3,6 +3,10 @@
 import { motion, useMotionValue, useReducedMotion, useScroll, useTransform, type MotionValue } from "motion/react";
 import { useRef, type ReactNode } from "react";
 import { Cup, type CupLayers } from "@/components/doodles/cup";
+import { recipes } from "@/content/drinks";
+
+// Brown sugar Earl Grey milk tea; the boba drops in as a separate step while scrolling.
+const heroDrink = { ...recipes.brownSugarEarlGrey, inclusions: [] };
 import { DoodleArrow, DoodleDecoration, type DoodleKind } from "@/components/doodles/doodle";
 import { Mascot } from "@/components/doodles/mascot";
 import { C } from "@/components/doodles/palette";
@@ -22,7 +26,7 @@ const hero = {
 const WORD_IN: ([number, number] | null)[] = [null, null, [0.08, 0.24], [0.26, 0.42], [0.44, 0.6]];
 
 const notes: { text: string; at: [number, number]; className: string; flip?: boolean; arrow: string; icon: DoodleKind }[] = [
-  { text: "fresh-brewed tea", at: [0.08, 0.2], className: "right-[calc(100%-1rem)] top-[50%]", arrow: "rotate-[-10deg]", icon: "drop" },
+  { text: "brown sugar streaks", at: [0.14, 0.26], className: "right-[calc(100%-1rem)] top-[50%]", arrow: "rotate-[-10deg]", icon: "drop" },
   { text: "lots of ice!", at: [0.3, 0.4], className: "left-[calc(100%-1.5rem)] top-[24%]", flip: true, arrow: "rotate-[-14deg]", icon: "sparkle" },
   { text: "brown sugar boba", at: [0.44, 0.54], className: "right-[calc(100%-2rem)] top-[80%]", arrow: "rotate-[-30deg]", icon: "boba" },
   { text: "our little sticker", at: [0.58, 0.68], className: "left-[calc(100%-1rem)] top-[44%]", flip: true, arrow: "rotate-[6deg]", icon: "heart" },
@@ -94,7 +98,7 @@ export function Hero() {
               <Mascot className="h-auto w-full -scale-x-100 rotate-[8deg]" hat float title="" />
             </motion.div>
             <div className="relative">
-              <Cup layers={layers} liquid="#d9a77c" toppingKinds={["boba"]} title="A MolaMola milk tea filling up as you scroll" />
+              <Cup layers={layers} recipe={heroDrink} extras={["boba"]} title="A MolaMola brown sugar Earl Grey boba milk tea filling up as you scroll" />
             </div>
 
 

@@ -20,6 +20,9 @@ const scales = {
   fish: { wobbleFreq: 0.008, wobble: 3.5 },
 } as const;
 
+/** Inside of the MolaMola cup (220×290 cup space). Shared by every drink via clipPath="url(#mm-cup-inside)". */
+export const CUP_INSIDE = "M37 84C42 150 50 213 57 242Q61 266 87 266L133 266Q159 266 163 242C170 213 178 150 183 84Z";
+
 export type HandScale = keyof typeof scales;
 export const hand = (scale: HandScale) => `url(#mm-hand-${scale})`;
 
@@ -27,6 +30,9 @@ export function ArtDefs() {
   return (
     <svg aria-hidden width="0" height="0" style={{ position: "absolute", width: 0, height: 0, overflow: "hidden" }} focusable="false">
       <defs>
+        <clipPath id="mm-cup-inside" clipPathUnits="userSpaceOnUse">
+          <path d={CUP_INSIDE} />
+        </clipPath>
         {Object.entries(scales).map(([name, s]) => (
           <filter key={name} id={`mm-hand-${name}`} x="-8%" y="-8%" width="116%" height="116%" colorInterpolationFilters="sRGB">
             {/* wobble the lines a touch; lines stay solid like ink, no texture on them */}

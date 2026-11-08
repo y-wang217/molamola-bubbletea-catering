@@ -2,7 +2,18 @@
 
 import { AnimatePresence, motion, useInView } from "motion/react";
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { colourSwatches, customizations, drinkCategories, flavours, toppings, type CustomizationId, type FlavourId, type ToppingKind } from "@/content/drinks";
+import {
+  colourSwatches,
+  customizations,
+  drinkCategories,
+  flavours,
+  toppings,
+  type CustomizationId,
+  type DrinkRecipe,
+  type FlavourId,
+  type Inclusion,
+  type ToppingKind,
+} from "@/content/drinks";
 import { Cup, useCupLayers } from "@/components/doodles/cup";
 import { CustomIcon, DrinkIcon, FlavourIcon, ToppingIcon } from "@/components/doodles/ingredients";
 import { DoodleDecoration } from "@/components/doodles/doodle";
@@ -44,7 +55,19 @@ export function BuildYourBar({ tabIndex = "02" }: { tabIndex?: string }) {
 
   const drink = drinkCategories.find((d) => d.id === drinkId) ?? drinkCategories[0];
   const flavour = flavours.find((f) => f.id === flavourId) ?? flavours[0];
-  const liquid = flavour.tint ? mixHex(drink.liquid, flavour.tint, 0.6) : drink.liquid;
+  // The flavour tints the top layer of the drink; "Fruit" adds fruit that matches the flavour.
+  const recipe: DrinkRecipe = flavour.tint
+    ? {
+        ...drink.recipe,
+        layers: drink.recipe.layers.map((l, i, all) => (i === all.length - 1 ? { ...l, color: mixHex(l.color, flavour.tint!, 0.5) } : l)),
+      }
+    : drink.recipe;
+  const fruitByFlavour: Partial<Record<FlavourId, Inclusion>> = { strawberry: "strawberry", mango: "mango", orange: "orange", grape: "grape" };
+  const base = drink.recipe.inclusions ?? [];
+  const toppingExtras = picked
+    .map((t): Inclusion | null => (t === "fruit" ? (fruitByFlavour[flavourId] ?? drink.fruit) : t === "float" || t === "brulee" ? null : t))
+    .filter((t): t is Inclusion => !!t && !base.includes(t));
+  const topCap = picked.includes("brulee") ? "brulee" : picked.includes("float") ? "float" : "none";
   const drinkLabel = flavour.tint ? `${flavour.name} ${drink.name}` : drink.name;
   const has = (id: CustomizationId) => extras.includes(id);
   // The cup gets its sticker in step 3: the real MolaMola logo by default, or a custom/branded one.
@@ -52,12 +75,18 @@ export function BuildYourBar({ tabIndex = "02" }: { tabIndex?: string }) {
   const layers = useCupLayers({
     tea: 1,
     ice: 1,
-    milk: drink.milk ? 1 : 0,
-    toppings: active >= 1 && picked.length ? 1 : 0,
+    milk: 1,
+    toppings: active >= 1 && (toppingExtras.length > 0 || topCap !== "none") ? 1 : 0,
     sticker: showSticker ? 1 : 0,
   });
 
   const toggle = <T,>(list: T[], v: T) => (list.includes(v) ? list.filter((x) => x !== v) : [...list, v]);
+  // Creamy Float and Crème Brûlée both sit on top, so picking one swaps out the other.
+  const toggleTopping = (list: ToppingKind[], v: ToppingKind) => {
+    const next = toggle(list, v);
+    if (!list.includes(v) && (v === "float" || v === "brulee")) return next.filter((x) => x !== (v === "float" ? "brulee" : "float"));
+    return next;
+  };
   const label = stickerText.trim() || "mola mola";
   const name = drinkName.trim() || "The Blesy";
   const colourOn = active >= 2 && has("colours");
@@ -91,8 +120,9 @@ export function BuildYourBar({ tabIndex = "02" }: { tabIndex?: string }) {
                 <div className="relative">
                   <Cup
                     layers={layers}
-                    liquid={liquid}
-                    toppingKinds={picked}
+                    recipe={recipe}
+                    extras={toppingExtras}
+                    top={topCap}
                     label={label}
                     strawColor={colourOn ? swatch : C.pink}
                     accent={colourOn ? swatch : C.pinkDeep}
@@ -194,7 +224,7 @@ export function BuildYourBar({ tabIndex = "02" }: { tabIndex?: string }) {
             <Step index={1} onActive={setActive} {...steps[1]}>
               <TokenRow label="Toppings">
                 {toppings.map((t) => (
-                  <Token key={t.id} label={t.name} sub={t.note} selected={picked.includes(t.id)} tone={C.pink} onClick={() => (setPicked(toggle(picked, t.id)), react())}>
+                  <Token key={t.id} label={t.name} sub={t.note} selected={picked.includes(t.id)} tone={C.pink} onClick={() => (setPicked(toggleTopping(picked, t.id)), react())}>
                     <ToppingIcon kind={t.id} className="h-12 w-12" />
                   </Token>
                 ))}

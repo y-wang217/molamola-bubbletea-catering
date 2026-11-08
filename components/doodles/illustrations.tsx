@@ -1,5 +1,7 @@
 import { hand } from "./art-defs";
 import { MascotArt } from "./mascot";
+import { CUP_VIEWBOX, DrinkArt } from "./drink-art";
+import { recipes, type DrinkRecipe } from "@/content/drinks";
 import { C, stroke } from "./palette";
 
 export type IllustrationKind =
@@ -33,23 +35,13 @@ export function Illustration({ kind, className = "h-24 w-24", title }: { kind: I
   );
 }
 
-/** A little MolaMola cup: straw, flat drink colour, the fish sticker reduced to a dot. */
-const MiniCup = ({ x, y, s = 1, fill = "#e3b48c", straw = C.pink, boba = true }: { x: number; y: number; s?: number; fill?: string; straw?: string; boba?: boolean }) => (
-  <g transform={`translate(${x} ${y}) scale(${s})`}>
-    <path fill={straw} d="M12 2 L17 -27 L22 -26 L17.5 2 Z" />
-    <path fill={fill} d="M1 1 h28 l-3.6 32 q-.6 3.4 -3.6 3.4 h-14 q-3 0 -3.6 -3.4 Z" />
-    <path fill="#fff" stroke="none" opacity=".35" d="M2 2h26l-.6 6H2.6Z" />
-    <rect x="-1.5" y="-3" width="33" height="5.5" rx="2.6" fill="#fff6e4" />
-    <circle cx="15" cy="19" r="5" fill="#fff" strokeWidth={1.6} />
-    <circle cx="14.6" cy="19.2" r="2" fill={C.mascotBody} stroke="none" />
-    {boba && (
-      <g fill={C.boba} stroke="none">
-        <circle cx="10" cy="31" r="2.3" />
-        <circle cx="15.5" cy="32" r="2.3" />
-        <circle cx="21" cy="30.6" r="2.3" />
-      </g>
-    )}
-  </g>
+/** A little MolaMola drink inside an illustration, drawn from a recipe (same art as everywhere else). */
+const MiniCup = ({ x, y, s = 1, recipe = recipes.brownSugarEarlGrey }: { x: number; y: number; s?: number; recipe?: DrinkRecipe }) => (
+  <svg x={x - 6.2 * s} y={y - 15.4 * s} width={42.4 * s} height={55.9 * s} viewBox={CUP_VIEWBOX} overflow="visible">
+    <g stroke="none">
+      <DrinkArt recipe={recipe} sticker="mini" w={4.2 / s} detail="mini" />
+    </g>
+  </svg>
 );
 
 const Sparkle = ({ x, y, s = 1, fill = C.butter }: { x: number; y: number; s?: number; fill?: string }) => (
@@ -94,7 +86,7 @@ const art: Record<IllustrationKind, React.ReactNode> = {
       <path fill={C.blueDeep} stroke="none" opacity=".55" d="M28 42h48v26H28Z" />
       <path fill="none" strokeWidth={2} d="M34 52h20M34 60h28" />
       <path fill="#fff6e4" d="M14 74h76l-5 9H19Z" />
-      <MiniCup x={88} y={60} s={0.78} fill={C.sageDeep} straw={C.butterDeep} boba={false} />
+      <MiniCup x={88} y={60} s={0.78} recipe={recipes.strawberryMatcha} />
     </>
   ),
   // Pop-ups & festivals: a tiny canopy booth with bunting.
@@ -110,8 +102,8 @@ const art: Record<IllustrationKind, React.ReactNode> = {
       <path fill="#fff6e4" stroke="none" d="M42 40h12l-4 16H38ZM66 40h12l4 16H70Z" />
       <path fill="#fff6e4" d="M18 56q7 8 14 0q7 8 14 0q7 8 14 0q7 8 14 0q7 8 14 0q7 8 14 0Z" />
       <path fill="#fff6e4" d="M24 78h72v22H24Z" />
-      <MiniCup x={44} y={60} s={0.5} fill="#e3b48c" />
-      <MiniCup x={62} y={61} s={0.48} fill={C.pinkDeep} />
+      <MiniCup x={44} y={60} s={0.5} />
+      <MiniCup x={62} y={61} s={0.48} recipe={recipes.honeyOrangeOolong} />
     </>
   ),
   // Something special: a gift and a sparkle.
@@ -128,9 +120,9 @@ const art: Record<IllustrationKind, React.ReactNode> = {
   // Ready-to-Serve: MolaMola cups in a kraft carrier.
   carrier: (
     <>
-      <MiniCup x={18} y={46} fill="#e3b48c" />
-      <MiniCup x={45} y={40} s={1.05} fill={C.pinkDeep} straw={C.blueDeep} />
-      <MiniCup x={74} y={46} fill={C.sageDeep} straw={C.butterDeep} />
+      <MiniCup x={18} y={46} />
+      <MiniCup x={45} y={40} s={1.05} recipe={recipes.strawberryMatcha} />
+      <MiniCup x={74} y={46} recipe={recipes.honeyOrangeOolong} />
       <path fill="#e8c99d" d="M10 74h100l-7 30H17Z" />
       <path fill="none" strokeWidth={2} d="M24 84h72" opacity=".6" />
       <circle cx="60" cy="94" r="4" fill="#fff" strokeWidth={1.8} />
@@ -143,9 +135,9 @@ const art: Record<IllustrationKind, React.ReactNode> = {
       <path fill={C.pink} d="M14 30l9-14h74l9 14Z" />
       <path fill="#fff6e4" stroke="none" d="M38 16h12l-3 14H35ZM70 16h12l3 14H73Z" />
       <path fill="#fff6e4" d="M14 30q6 8 12 0q6 8 12 0q6 8 12 0q6 8 12 0q6 8 12 0q6 8 12 0q6 8 12 0q6 8 12 0Z" />
-      <MiniCup x={32} y={47} s={0.6} fill="#e3b48c" />
-      <MiniCup x={52} y={45} s={0.64} fill={C.sageDeep} straw={C.butterDeep} />
-      <MiniCup x={73} y={47} s={0.6} fill={C.pinkDeep} straw={C.blueDeep} />
+      <MiniCup x={32} y={47} s={0.6} />
+      <MiniCup x={52} y={45} s={0.64} recipe={recipes.strawberryMatcha} />
+      <MiniCup x={73} y={47} s={0.6} recipe={recipes.honeyOrangeOolong} />
       <path fill={C.blue} d="M14 68h92v36q0 3-3 3H17q-3 0-3-3Z" />
       <circle cx="60" cy="87" r="12" fill="#fff" />
       <g transform="translate(51.5 78.5) scale(.025)">
@@ -196,7 +188,7 @@ const art: Record<IllustrationKind, React.ReactNode> = {
       <path fill={C.pink} d="M60 74c-4-5-12-3-11 3 1 3 6 6 11 9 5-3 10-6 11-9 1-6-7-8-11-3Z" />
     </>
   ),
-  cup: <MiniCup x={36} y={34} s={1.6} fill="#e3b48c" />,
+  cup: <MiniCup x={36} y={34} s={1.6} />,
   heart: (
     <>
       <path fill={C.pink} d="M60 100C34 84 16 68 18 46c1-14 12-22 24-21 8 1 14 6 18 12 4-6 10-11 18-12 12-1 24 8 24 22 0 22-18 37-42 53Z" />

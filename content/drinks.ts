@@ -1,34 +1,91 @@
-// Drink bar building blocks: categories, toppings and customization options.
-// `liquid`, `milk` and `garnish` drive the illustrated cups.
+// Drink bar building blocks: recipes, categories, toppings and customization options.
+// Every illustrated cup on the site is drawn from a DrinkRecipe, so drinks look the same everywhere.
 import type { Tone } from "@/lib/tones";
 
-export type Garnish = "boba" | "layer" | "citrus" | "foam" | "sparkle";
+/** One liquid layer, bottom → top. `to` = where the layer ends (0 = cup bottom, 1 = drink surface). */
+export type DrinkLayer = { color: string; to: number; texture?: "jam" };
+
+/** Things floating or sitting in the drink. */
+export type Inclusion = "boba" | "aloe" | "pudding" | "strawberry" | "mango" | "orange" | "taro" | "grape";
+
+/** What sits on top of the drink. "float" = Creamy Float Topping, "brulee" = Crème Brûlée top. */
+export type TopCap = "none" | "float" | "brulee";
+
+export type DrinkRecipe = {
+  layers: DrinkLayer[];
+  /** Brown sugar streaks on the inside wall. */
+  streaks?: boolean;
+  ice?: boolean;
+  inclusions?: Inclusion[];
+  top?: TopCap;
+};
+
+// Shared colours so drinks stay consistent.
+export const drinkColors = {
+  milkTea: "#ddb48d",
+  earlGrey: "#d4a780",
+  milk: "#fbf3e3",
+  matcha: "#b3cf8f",
+  jam: "#ea7a88",
+  oolong: "#f7cd78",
+  coffee: "#a8784f",
+  latteMilk: "#f2e0c6",
+  grape: "#c9a2dc",
+  taroMilk: "#dcc6ea",
+  mangoMilk: "#ffe08f",
+  strawberryMilk: "#f7c2cb",
+};
+
+/** Reference drinks (used on the site and on the /drink-styles preview page). */
+export const recipes = {
+  brownSugarEarlGrey: { layers: [{ color: drinkColors.earlGrey, to: 1 }], streaks: true, ice: true, inclusions: ["boba"] },
+  strawberryMatcha: {
+    layers: [
+      { color: drinkColors.jam, to: 0.26, texture: "jam" },
+      { color: drinkColors.milk, to: 0.58 },
+      { color: drinkColors.matcha, to: 1 },
+    ],
+    ice: true,
+  },
+  honeyOrangeOolong: { layers: [{ color: drinkColors.oolong, to: 1 }], ice: true, inclusions: ["orange"] },
+  creamyFloatMilkTea: { layers: [{ color: drinkColors.milkTea, to: 1 }], ice: true, top: "float" },
+  cremeBruleeEarlGrey: { layers: [{ color: drinkColors.earlGrey, to: 1 }], inclusions: ["boba"], top: "brulee" },
+  dirtyLatte: {
+    layers: [
+      { color: drinkColors.latteMilk, to: 0.5 },
+      { color: drinkColors.coffee, to: 1 },
+    ],
+    ice: true,
+  },
+  grapeSeasonal: { layers: [{ color: drinkColors.grape, to: 1 }], ice: true, inclusions: ["grape"] },
+} satisfies Record<string, DrinkRecipe>;
 
 export type DrinkCategory = {
   id: string;
   name: string;
   example: string;
-  liquid: string;
-  milk: boolean;
-  garnish: Garnish;
+  recipe: DrinkRecipe;
+  /** What "Fruit" adds for this drink when no fruit flavour is picked. */
+  fruit: Inclusion;
   tone: Tone;
 };
 
 export const drinkCategories: DrinkCategory[] = [
-  { id: "milk-tea", name: "Milk Tea", example: "Brown sugar, taro, jasmine", liquid: "#d9a77c", milk: true, garnish: "boba", tone: "butter" },
-  { id: "matcha", name: "Matcha", example: "Strawberry matcha, latte", liquid: "#a9c48a", milk: true, garnish: "layer", tone: "sage" },
-  { id: "fruit-tea", name: "Fruit Tea", example: "Mango, lychee, passionfruit", liquid: "#f6b98a", milk: false, garnish: "citrus", tone: "pink" },
-  { id: "coffee", name: "Coffee", example: "Vietnamese iced, dirty chai", liquid: "#a77a5c", milk: true, garnish: "foam", tone: "cream" },
-  { id: "seasonal", name: "Seasonal", example: "Rotating specials", liquid: "#e9a3b4", milk: false, garnish: "sparkle", tone: "blue" },
+  { id: "milk-tea", name: "Milk Tea", example: "Brown sugar Earl Grey, taro", recipe: { ...recipes.brownSugarEarlGrey, inclusions: [] }, fruit: "strawberry", tone: "butter" },
+  { id: "matcha", name: "Matcha", example: "Strawberry matcha latte", recipe: recipes.strawberryMatcha, fruit: "strawberry", tone: "sage" },
+  { id: "fruit-tea", name: "Fruit Tea", example: "Honey orange four season oolong", recipe: recipes.honeyOrangeOolong, fruit: "orange", tone: "pink" },
+  { id: "coffee", name: "Coffee", example: "Dirty latte, Vietnamese iced", recipe: recipes.dirtyLatte, fruit: "strawberry", tone: "cream" },
+  { id: "seasonal", name: "Seasonal", example: "Rotating specials", recipe: recipes.grapeSeasonal, fruit: "grape", tone: "blue" },
 ];
 
-export type ToppingKind = "boba" | "aloe" | "pudding" | "float" | "fruit";
+export type ToppingKind = "boba" | "aloe" | "pudding" | "float" | "brulee" | "fruit";
 
 export const toppings: { id: ToppingKind; name: string; note: string }[] = [
   { id: "boba", name: "Boba", note: "Chewy brown sugar pearls" },
   { id: "aloe", name: "Aloe", note: "Light and refreshing" },
   { id: "pudding", name: "Milk Pudding", note: "Silky, not too sweet" },
-  { id: "float", name: "Creamy Float", note: "A cloud on top" },
+  { id: "float", name: "Creamy Float", note: "Smooth cream cap" },
+  { id: "brulee", name: "Crème Brûlée", note: "Torched custard top" },
   { id: "fruit", name: "Fruit", note: "Fresh, seasonal" },
 ];
 

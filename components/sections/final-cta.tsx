@@ -2,6 +2,7 @@
 
 import { messageLink } from "@/content/site";
 import { Cup, useCupLayers } from "@/components/doodles/cup";
+import { recipes } from "@/content/drinks";
 import { Mascot } from "@/components/doodles/mascot";
 import { DoodleDecoration } from "@/components/doodles/doodle";
 import { CTAButton } from "@/components/ui/cta-button";
@@ -40,7 +41,7 @@ export function FinalCTA() {
                 <Mascot className="h-auto w-full -scale-x-100" hat expression="wink" float title="The MolaMola fish, winking" />
               </Parallax>
               <Parallax speed={0.3} className="w-[54%]">
-                <Cup layers={full} liquid="#f6b98a" toppingKinds={["boba", "fruit"]} title="A finished MolaMola drink" />
+                <Cup layers={full} recipe={recipes.honeyOrangeOolong} title="A MolaMola honey orange four season oolong tea" />
               </Parallax>
             </div>
           </div>
