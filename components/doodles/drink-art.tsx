@@ -1,4 +1,6 @@
 /**
+ * OFFICIAL STANDARD: see docs/drink-illustration-system.md. Do not redesign; consistency fixes only.
+ *
  * MolaMola drink artwork. Every cup on the site (hero, builder, mini icons, catering scenes)
  * is drawn from these pieces, in one 220×290 coordinate space, from a DrinkRecipe.
  *
