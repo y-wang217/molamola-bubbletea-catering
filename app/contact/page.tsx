@@ -30,12 +30,12 @@ export default function ContactPage() {
             <ol className="mt-10 space-y-4">
               {next.map((t, i) => (
                 <li key={t} className="flex gap-4">
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-[1.5px] border-ink bg-butter font-display text-sm font-extrabold">{i + 1}</span>
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-[1.5px] border-linework bg-butter font-display text-sm font-extrabold">{i + 1}</span>
                   <p className="pt-1.5 text-[16px] text-ink/80">{t}</p>
                 </li>
               ))}
             </ol>
-            <div className="mt-10 flex items-center gap-4 rounded-[var(--radius-card)] border-[1.5px] border-dashed border-ink/40 p-5">
+            <div className="mt-10 flex items-center gap-4 rounded-[var(--radius-card)] border-[1.5px] border-dashed border-linework/40 p-5">
               <Mascot className="h-14 w-14 shrink-0" float title="" />
               <p className="text-[15px]">
                 <span className="font-hand text-2xl leading-none">Prefer to chat?</span>

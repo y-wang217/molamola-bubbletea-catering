@@ -20,7 +20,7 @@ export function Celebrate() {
     <Section id="celebrate">
       <Container>
         <div className="flex flex-wrap items-end justify-between gap-6">
-          <SectionHeader tab={{ index: "01", label: "Celebrations" }} title="What Are You Celebrating?" highlight="Celebrating?" />
+          <SectionHeader tab={{ index: "01", label: "Celebrations" }} title="What Are You Celebrating?" highlight="Celebrating?" rays />
           <DoodleDecoration kind="star" className="hidden h-14 w-14 lg:block" motion="twinkle" />
         </div>
 

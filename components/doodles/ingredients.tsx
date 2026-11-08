@@ -1,4 +1,4 @@
-import type { CustomizationId, DrinkCategory, ToppingKind } from "@/content/drinks";
+import type { CustomizationId, DrinkCategory, FlavourId, ToppingKind } from "@/content/drinks";
 import { C, stroke } from "./palette";
 
 const s = { ...stroke, strokeWidth: 2.2 };
@@ -170,3 +170,81 @@ export function CustomIcon({ id, className = "h-14 w-14", accent = C.pinkDeep }:
     </svg>
   );
 }
+
+/** Fruit icons for "Choose a flavour". */
+export function FlavourIcon({ id, className = "h-12 w-12" }: { id: FlavourId; className?: string }) {
+  return (
+    <svg viewBox="0 0 56 56" className={className} aria-hidden overflow="visible">
+      <g {...s}>{flavourArt[id]}</g>
+    </svg>
+  );
+}
+
+const flavourArt: Record<FlavourId, React.ReactNode> = {
+  original: (
+    <>
+      <path fill={C.sage} d="M12 44C10 24 24 10 46 10c1 22-12 36-34 34Z" />
+      <path fill="none" d="M12 44c8-11 17-20 28-27M24 34l-1-8M31 27l7 1" />
+    </>
+  ),
+  strawberry: (
+    <>
+      <path fill="#f49aa6" d="M28 48c-10-5-16-15-15-24 .8-5 5-8 15-8s14.2 3 15 8c1 9-5 19-15 24Z" />
+      <path fill={C.sageDeep} d="M19 16c3-5 6-6.5 9-6 3-.5 6 1 9 6-3 2-6 1.5-9-.5-3 2-6 2.5-9 .5Z" />
+      <g fill={C.ink} stroke="none">
+        <circle cx="22" cy="25" r="1.2" />
+        <circle cx="30" cy="23" r="1.2" />
+        <circle cx="35" cy="30" r="1.2" />
+        <circle cx="25" cy="33" r="1.2" />
+        <circle cx="29" cy="40" r="1.2" />
+      </g>
+    </>
+  ),
+  mango: (
+    <>
+      <path fill="#ffc24d" d="M14 34c0-14 10-24 22-24 8 0 12 6 12 14 0 14-12 24-24 24-6 0-10-6-10-14Z" />
+      <path fill="#ffa33a" stroke="none" d="M20 40c4 2 10 1 15-3-6 6-13 7-15 3Z" opacity=".6" />
+      <path fill={C.sageDeep} d="M36 10c2-6 8-8 12-6-2 5-6 7-12 6Z" />
+    </>
+  ),
+  orange: (
+    <>
+      <circle cx="28" cy="28" r="19" fill={C.tangerine} />
+      <circle cx="28" cy="28" r="13.5" fill="#ffe1bd" strokeWidth={1.8} />
+      <path strokeWidth={1.8} d="M28 14.5v27M14.5 28h27M18.5 18.5l19 19M37.5 18.5l-19 19" />
+    </>
+  ),
+  lychee: (
+    <>
+      <circle cx="24" cy="30" r="15" fill="#f4a3b4" />
+      <path fill="none" strokeWidth={1.5} d="M14 24l4 2M20 18l2 4M28 18l-1 4M33 24l-4 2M16 34l4-1" opacity=".7" />
+      <circle cx="36" cy="32" r="11" fill="#fbf4ee" />
+      <ellipse cx="38" cy="33" rx="3" ry="4" fill="#d9b79c" strokeWidth={1.5} />
+    </>
+  ),
+  grape: (
+    <>
+      <path fill="none" d="M28 14c0-4 2-7 5-8" />
+      <path fill={C.sageDeep} d="M30 12c4-4 10-4 13 0-4 3-9 3-13 0Z" />
+      {[
+        [20, 22],
+        [30, 21],
+        [25, 30],
+        [35, 30],
+        [16, 31],
+        [21, 39],
+        [31, 39],
+        [26, 47],
+      ].map(([x, y]) => (
+        <circle key={`${x}-${y}`} cx={x} cy={y} r="6" fill="#b99ad8" />
+      ))}
+    </>
+  ),
+  lime: (
+    <>
+      <circle cx="28" cy="28" r="19" fill="#9fcf6a" />
+      <circle cx="28" cy="28" r="13.5" fill="#e6f5c8" strokeWidth={1.8} />
+      <path strokeWidth={1.8} d="M28 14.5v27M14.5 28h27M18.5 18.5l19 19M37.5 18.5l-19 19" />
+    </>
+  ),
+};

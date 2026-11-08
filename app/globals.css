@@ -2,37 +2,38 @@
 
 /* ───────────── MolaMola design tokens ───────────── */
 @theme {
-  /* base */
-  --color-cream: #fbf5ea;
-  --color-paper: #fffaf0;
-  --color-ink: #3a2c26; /* dark cocoa: text + hand-drawn outlines */
-  --color-cocoa: #7b675c; /* muted text */
-  --color-line: #e9dccb;
+  /* base — from the MolaMola style board */
+  --color-cream: #fff9ee;
+  --color-paper: #fffdf7;
+  --color-ink: #4b3224; /* text */
+  --color-linework: #6b4a33; /* cocoa brown outlines + doodles */
+  --color-cocoa: #7d5f4b; /* muted text */
+  --color-line: #ecdcc6;
 
   /* pastels */
-  --color-powder: #bcd7ec;
-  --color-powder-soft: #e3eef7;
-  --color-blush: #f7c8d2;
-  --color-blush-soft: #fbe6ea;
-  --color-butter: #fbe49c;
-  --color-butter-soft: #fdf2cc;
-  --color-sage: #c8d9b4;
-  --color-sage-soft: #e6eedc;
+  --color-powder: #cfe8ff;
+  --color-powder-soft: #e8f4ff;
+  --color-blush: #ffd6e3;
+  --color-blush-soft: #ffecf2;
+  --color-butter: #ffe7a3;
+  --color-butter-soft: #fff4d1;
+  --color-sage: #d6e8c3;
+  --color-sage-soft: #ebf4e2;
 
   /* accent (used sparingly) */
-  --color-tangerine: #f39a5d;
-  --color-tangerine-deep: #e5824a;
+  --color-tangerine: #ffb366;
+  --color-tangerine-deep: #b95f1a;
 
   --font-sans: var(--font-figtree), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
   --font-hand: var(--font-caveat), "Comic Sans MS", cursive;
 
-  --radius-sheet: 2.25rem;
-  --radius-card: 1.75rem;
+  --radius-sheet: 2.2rem 2.7rem 2.3rem 2.8rem / 2.7rem 2.2rem 2.8rem 2.3rem; /* slightly hand-cut */
+  --radius-card: 1.6rem 2rem 1.7rem 2.1rem / 2rem 1.6rem 2.1rem 1.7rem;
 
-  --shadow-sticker: 3px 3px 0 0 var(--color-ink);
-  --shadow-sticker-lg: 5px 5px 0 0 var(--color-ink);
-  --shadow-soft: 0 18px 40px -24px rgb(58 44 38 / 0.35);
+  --shadow-sticker: 2px 3px 0 0 var(--color-linework);
+  --shadow-sticker-lg: 4px 5px 0 0 var(--color-linework);
+  --shadow-soft: 0 18px 40px -24px rgb(107 74 51 / 0.3);
 
   --animate-float: float 6s ease-in-out infinite;
   --animate-bob: bob 2.8s ease-in-out infinite;
@@ -100,13 +101,13 @@ body {
 }
 
 :focus-visible {
-  outline: 2.5px dashed var(--color-ink);
+  outline: 2.5px dashed var(--color-linework);
   outline-offset: 3px;
 }
 
 /* Dotted notebook paper, used on a few "binder sheets". */
 .dot-grid {
-  background-image: radial-gradient(rgb(58 44 38 / 0.13) 1.1px, transparent 1.2px);
+  background-image: radial-gradient(rgb(107 74 51 / 0.14) 1.1px, transparent 1.2px);
   background-size: 22px 22px;
 }
 

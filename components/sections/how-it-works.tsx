@@ -22,11 +22,11 @@ export function HowItWorks({ tabIndex = "04" }: { tabIndex?: string }) {
         <div ref={ref} className="relative mt-16 lg:mt-24">
           {/* desktop: curved hand-drawn line through the four steps */}
           <svg aria-hidden viewBox="0 0 1000 140" preserveAspectRatio="none" className="absolute top-0 left-0 hidden h-32 w-full lg:block" overflow="visible">
-            <path d="M125 70 C 190 -10, 310 -10, 375 70 S 560 150, 625 70 S 810 -10, 875 70" fill="none" stroke="#3a2c26" strokeOpacity=".18" strokeWidth={2} strokeDasharray="2 9" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
+            <path d="M125 70 C 190 -10, 310 -10, 375 70 S 560 150, 625 70 S 810 -10, 875 70" fill="none" stroke="#6b4a33" strokeOpacity=".18" strokeWidth={2} strokeDasharray="2 9" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
             <motion.path
               d="M125 70 C 190 -10, 310 -10, 375 70 S 560 150, 625 70 S 810 -10, 875 70"
               fill="none"
-              stroke="#f39a5d"
+              stroke="#ffa75a"
               strokeWidth={3}
               strokeLinecap="round"
               vectorEffect="non-scaling-stroke"
@@ -34,7 +34,7 @@ export function HowItWorks({ tabIndex = "04" }: { tabIndex?: string }) {
             />
           </svg>
           {/* mobile: dashed spine */}
-          <span aria-hidden className="absolute top-12 bottom-12 left-12 border-l-2 border-dashed border-ink/25 lg:hidden" />
+          <span aria-hidden className="absolute top-12 bottom-12 left-12 border-l-2 border-dashed border-linework/25 lg:hidden" />
 
           <ol className="relative grid gap-12 lg:grid-cols-4 lg:gap-8">
             {howItWorks.map((s, i) => (

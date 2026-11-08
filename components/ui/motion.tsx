@@ -67,7 +67,7 @@ export function Parallax({ children, speed = 0.5, className }: { children: React
 }
 
 /** Hand-drawn underline that draws itself in when visible. */
-export function HandUnderline({ children, color = "#f39a5d", className = "" }: { children: ReactNode; color?: string; className?: string }) {
+export function HandUnderline({ children, color = "#ffa75a", className = "" }: { children: ReactNode; color?: string; className?: string }) {
   return (
     <span className={`relative inline-block whitespace-nowrap ${className}`}>
       <span className="relative z-10">{children}</span>

@@ -26,7 +26,7 @@ export function GalleryCard({ item, index = 0 }: { item: GalleryItem; index?: nu
       animate={{ rotate: item.tilt, scale: 1 }}
       whileHover={{ rotate: 0, scale: 1.03 }}
       transition={{ type: "spring", stiffness: 220, damping: 18 }}
-      className="relative mx-auto w-full max-w-sm bg-white p-3 pb-2 shadow-[0_14px_30px_-18px_rgb(58_44_38/0.55),0_2px_4px_rgb(58_44_38/0.08)]"
+      className="relative mx-auto w-full max-w-sm bg-white p-3 pb-2 shadow-[0_14px_30px_-18px_rgb(107_74_51/0.45),0_2px_4px_rgb(107_74_51/0.08)]"
     >
       <span aria-hidden className={`tape absolute -top-3 left-1/2 h-7 w-24 -translate-x-1/2 ${index % 2 ? "rotate-3" : "-rotate-2"} ${tapeTone[index % tapeTone.length]}`} />
       <div className={`relative ${aspect[item.shape]} overflow-hidden ${toneBg[item.tone]}`}>

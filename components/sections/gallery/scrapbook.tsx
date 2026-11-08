@@ -39,7 +39,7 @@ export function Scrapbook() {
               aria-pressed={filter === c}
               onClick={() => setFilter(c)}
               className={`min-h-11 shrink-0 rounded-full border-[1.5px] px-4 text-[14.5px] font-semibold transition ${
-                filter === c ? "border-ink bg-butter shadow-[var(--shadow-sticker)]" : "border-ink/20 bg-paper hover:border-ink/60"
+                filter === c ? "border-linework bg-butter shadow-[var(--shadow-sticker)]" : "border-linework/20 bg-paper hover:border-linework/60"
               }`}
             >
               {c}

@@ -41,6 +41,7 @@ export function DrinkJourney() {
         <SectionHeader
           tab={{ index: "03", label: "Custom drinks" }}
           title="Build Your Drink Bar"
+          rays
           highlight="Drink Bar"
           align="center"
           intro="Pick the drinks, pick the toppings, then make it yours. Every MolaMola bar is put together around your event."

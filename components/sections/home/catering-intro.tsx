@@ -32,7 +32,7 @@ export function CateringIntro() {
             <Reveal as="li" key={pkg.id} from="right" delay={0.1 + i * 0.12}>
               <Link
                 href={pkg.cta.href}
-                className={`group flex items-center gap-4 rounded-[var(--radius-card)] border-[1.5px] border-ink bg-paper p-4 transition-transform duration-300 hover:-translate-y-1 sm:block sm:p-5 ${
+                className={`group flex items-center gap-4 rounded-[var(--radius-card)] border-[1.5px] border-linework bg-paper p-4 transition-transform duration-300 hover:-translate-y-1 sm:block sm:p-5 ${
                   i % 2 ? "sm:mt-10 sm:rotate-[1.2deg]" : "sm:-rotate-[1.2deg]"
                 }`}
               >

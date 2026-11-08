@@ -43,7 +43,7 @@ export function OurStory() {
                 <h2 className="font-hand text-[2.2rem] leading-none">{s.title}</h2>
               </div>
               <p className="mt-4 text-[16.5px] leading-relaxed text-ink/80">{s.body}</p>
-              {i < about.story.length - 1 && <span aria-hidden className="absolute top-0 -right-5 bottom-0 hidden border-r-[1.5px] border-dashed border-ink/20 md:block" />}
+              {i < about.story.length - 1 && <span aria-hidden className="absolute top-0 -right-5 bottom-0 hidden border-r-[1.5px] border-dashed border-linework/20 md:block" />}
             </Reveal>
           ))}
         </ol>
@@ -76,7 +76,7 @@ export function Team() {
         <ul className="mx-auto mt-14 grid max-w-3xl gap-12 sm:grid-cols-2">
           {about.team.map((m, i) => (
             <Reveal as="li" key={m.name} delay={i * 0.12} className="text-center">
-              <figure className={`mx-auto w-60 bg-white p-3 pb-2 shadow-[0_14px_30px_-18px_rgb(58_44_38/0.55)] ${i % 2 ? "rotate-2" : "-rotate-2"}`}>
+              <figure className={`mx-auto w-60 bg-white p-3 pb-2 shadow-[0_14px_30px_-18px_rgb(107_74_51/0.45)] ${i % 2 ? "rotate-2" : "-rotate-2"}`}>
                 <div className={`dot-grid flex aspect-square items-center justify-center ${toneBg[m.tone]}`}>
                   <span className="rounded-full bg-paper/80 px-2.5 py-0.5 text-[11px] font-semibold tracking-wide text-cocoa uppercase">photo placeholder</span>
                 </div>

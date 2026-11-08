@@ -20,11 +20,11 @@ export function Section({ children, id, className = "" }: { children: ReactNode;
  */
 export function BinderSheet({ children, className = "", tone = "bg-paper", holes = true }: { children: ReactNode; className?: string; tone?: string; holes?: boolean }) {
   return (
-    <div className={`relative rounded-[var(--radius-sheet)] border-[1.5px] border-ink/15 ${tone} shadow-[var(--shadow-soft)] ${className}`}>
+    <div className={`relative rounded-[var(--radius-sheet)] border-[1.5px] border-linework/15 ${tone} shadow-[var(--shadow-soft)] ${className}`}>
       {holes && (
         <div aria-hidden className="pointer-events-none absolute top-0 bottom-0 left-4 hidden flex-col justify-evenly sm:flex">
           {[0, 1, 2].map((i) => (
-            <span key={i} className="h-4 w-4 rounded-full border-[1.5px] border-ink/20 bg-cream shadow-[inset_1px_1px_2px_rgb(58_44_38/0.2)]" />
+            <span key={i} className="h-4 w-4 rounded-full border-[1.5px] border-linework/20 bg-cream shadow-[inset_1px_1px_2px_rgb(107_74_51/0.2)]" />
           ))}
         </div>
       )}

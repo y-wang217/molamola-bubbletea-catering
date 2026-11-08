@@ -28,7 +28,7 @@ export function FeatureCard({
   className?: string;
 }) {
   return (
-    <article className={`group relative flex h-full flex-col overflow-hidden rounded-[var(--radius-card)] border-[1.5px] border-ink ${toneBg[tone]} p-6 sm:p-7 ${lift} ${className}`}>
+    <article className={`group relative flex h-full flex-col overflow-hidden rounded-[var(--radius-card)] border-[1.5px] border-linework ${toneBg[tone]} p-6 sm:p-7 ${lift} ${className}`}>
       <DoodleDecoration
         kind="sparkle"
         className="absolute top-5 right-5 h-5 w-5 opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-hover:animate-twinkle"
@@ -48,10 +48,10 @@ export function CateringPackageCard({ pkg, detailed = false }: { pkg: CateringPa
   return (
     <article
       id={detailed ? pkg.id : undefined}
-      className={`group relative grid h-full scroll-mt-28 overflow-hidden rounded-[var(--radius-sheet)] border-[1.5px] border-ink ${toneSoftBg[pkg.tone]} ${detailed ? "lg:grid-cols-[1fr_1.1fr]" : ""}`}
+      className={`group relative grid h-full scroll-mt-28 overflow-hidden rounded-[var(--radius-sheet)] border-[1.5px] border-linework ${toneSoftBg[pkg.tone]} ${detailed ? "lg:grid-cols-[1fr_1.1fr]" : ""}`}
     >
       <div className={`relative flex items-center justify-center ${toneBg[pkg.tone]} dot-grid px-8 pt-10 pb-6 ${detailed ? "lg:py-16" : ""}`}>
-        <span className="absolute top-5 left-5 rounded-full border-[1.5px] border-ink bg-paper px-3 py-1 font-hand text-lg leading-none">{pkg.kicker}</span>
+        <span className="absolute top-5 left-5 rounded-full border-[1.5px] border-linework bg-paper px-3 py-1 font-hand text-lg leading-none">{pkg.kicker}</span>
         <Illustration kind={pkg.illustration} className="h-44 w-44 transition-transform duration-500 group-hover:-rotate-3 group-hover:scale-105 sm:h-56 sm:w-56" />
       </div>
       <div className="flex flex-col p-7 sm:p-9">
@@ -66,7 +66,7 @@ export function CateringPackageCard({ pkg, detailed = false }: { pkg: CateringPa
           ))}
         </ul>
         {detailed && (
-          <dl className="mt-8 divide-y divide-dashed divide-ink/20 border-y border-dashed border-ink/20 text-[15px]">
+          <dl className="mt-8 divide-y divide-dashed divide-linework/20 border-y border-dashed border-linework/20 text-[15px]">
             {pkg.details.map((d) => (
               <div key={d.label} className="flex flex-wrap justify-between gap-x-6 gap-y-1 py-3">
                 <dt className="text-cocoa">{d.label}</dt>
@@ -88,16 +88,19 @@ export function CateringPackageCard({ pkg, detailed = false }: { pkg: CateringPa
 export function PricingCard({ tier }: { tier: PricingTier }) {
   return (
     <article
-      className={`relative flex h-full flex-col rounded-[var(--radius-card)] border-[1.5px] border-ink ${toneBg[tier.tone]} p-6 ${lift} ${
+      className={`relative flex h-full flex-col rounded-[var(--radius-card)] border-[1.5px] border-linework ${toneBg[tier.tone]} p-6 ${lift} ${
         tier.featured ? "shadow-[var(--shadow-sticker-lg)]" : ""
       }`}
     >
       {tier.featured && (
-        <span className="absolute -top-4 right-5 rotate-3 rounded-full border-[1.5px] border-ink bg-paper px-3 py-0.5 font-hand text-lg">most booked!</span>
+        <>
+          <DoodleDecoration kind="crown" className="absolute -top-5 -left-3 h-10 w-10 -rotate-12" />
+          <span className="absolute -top-4 right-5 rotate-3 rounded-full border-[1.5px] border-linework bg-paper px-3 py-0.5 font-hand text-lg">most booked!</span>
+        </>
       )}
       <p className="text-xs font-bold tracking-[0.16em] uppercase">{tier.name}</p>
       <p className="mt-1 text-[14px] text-ink/70">{tier.guests}</p>
-      <div className="mt-5 border-t-[1.5px] border-dashed border-ink/30 pt-5">
+      <div className="mt-5 border-t-[1.5px] border-dashed border-linework/30 pt-5">
         <p className="font-hand text-xl leading-none text-ink/70">{tier.priceNote}</p>
         <p className="font-display text-5xl font-extrabold tracking-[-0.04em]">{tier.price}</p>
         <p className="mt-2 text-[14px] leading-snug text-ink/75">{tier.blurb}</p>
@@ -118,9 +121,9 @@ export function PricingCard({ tier }: { tier: PricingTier }) {
 export function TimelineStep({ n, title, body, illustration, tone }: { n: string; title: string; body: string; illustration: IllustrationKind; tone: Tone }) {
   return (
     <div className="group relative flex gap-5 lg:flex-col lg:items-center lg:text-center">
-      <div className={`relative z-10 flex h-24 w-24 shrink-0 items-center justify-center rounded-full border-[1.5px] border-ink ${toneBg[tone]} transition-transform duration-300 group-hover:-rotate-6 lg:h-32 lg:w-32`}>
+      <div className={`relative z-10 flex h-24 w-24 shrink-0 items-center justify-center rounded-full border-[1.5px] border-linework ${toneBg[tone]} transition-transform duration-300 group-hover:-rotate-6 lg:h-32 lg:w-32`}>
         <Illustration kind={illustration} className="h-16 w-16 lg:h-20 lg:w-20" />
-        <span className="absolute -top-2 -right-2 flex h-9 w-9 items-center justify-center rounded-full border-[1.5px] border-ink bg-paper font-display text-sm font-extrabold">{n}</span>
+        <span className="absolute -top-2 -right-2 flex h-9 w-9 items-center justify-center rounded-full border-[1.5px] border-linework bg-paper font-display text-sm font-extrabold">{n}</span>
       </div>
       <div className="pt-2 lg:pt-4">
         <h3 className="font-display text-xl font-extrabold tracking-[-0.02em] lg:text-2xl">{title}</h3>

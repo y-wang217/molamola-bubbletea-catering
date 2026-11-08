@@ -24,7 +24,7 @@ export function WhyMolaMola() {
             <motion.path
               d="M60 70 C 160 -10, 280 130, 380 60 S 600 -10, 640 70 S 860 140, 950 40"
               fill="none"
-              stroke="#3a2c26"
+              stroke="#6b4a33"
               strokeOpacity=".35"
               strokeWidth={2}
               strokeDasharray="1 9"

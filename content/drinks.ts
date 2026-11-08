@@ -44,4 +44,23 @@ export const customizations: { id: CustomizationId; name: string; note: string }
 ];
 
 /** Palette choices for "Wedding colours" (straw + sticker ring). */
-export const colourSwatches = ["#ee9fb0", "#94bddc", "#f5cf62", "#a5c08a", "#f39a5d"];
+export const colourSwatches: { name: string; hex: string }[] = [
+  { name: "Blush", hex: "#f6a9c0" },
+  { name: "Powder blue", hex: "#9ccaf2" },
+  { name: "Butter", hex: "#ffd26b" },
+  { name: "Sage", hex: "#a9cb8c" },
+  { name: "Peach", hex: "#ffb366" },
+];
+
+export type FlavourId = "original" | "strawberry" | "mango" | "orange" | "lychee" | "grape" | "lime";
+
+/** "Choose a flavour" options. `tint` is blended into the drink colour in the builder preview. */
+export const flavours: { id: FlavourId; name: string; tint?: string }[] = [
+  { id: "original", name: "Original" },
+  { id: "strawberry", name: "Strawberry", tint: "#f7a3b5" },
+  { id: "mango", name: "Mango", tint: "#ffc24d" },
+  { id: "orange", name: "Orange", tint: "#ffa65c" },
+  { id: "lychee", name: "Lychee", tint: "#f9dde6" },
+  { id: "grape", name: "Grape", tint: "#b99ad8" },
+  { id: "lime", name: "Lime", tint: "#bfe08a" },
+];

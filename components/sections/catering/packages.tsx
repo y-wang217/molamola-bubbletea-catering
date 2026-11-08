@@ -42,7 +42,7 @@ export function ServiceComparison() {
         <Reveal className="mt-12 overflow-x-auto">
           <table className="w-full min-w-[30rem] border-collapse text-left text-[15px]">
             <thead>
-              <tr className="border-b-[1.5px] border-ink">
+              <tr className="border-b-[1.5px] border-linework">
                 <th scope="col" className="py-4 pr-4 font-hand text-xl font-normal text-cocoa">
                   what you get
                 </th>
@@ -56,7 +56,7 @@ export function ServiceComparison() {
             </thead>
             <tbody>
               {serviceComparison.map((row) => (
-                <tr key={row.feature} className="border-b-[1.5px] border-dashed border-ink/20">
+                <tr key={row.feature} className="border-b-[1.5px] border-dashed border-linework/20">
                   <th scope="row" className="py-3.5 pr-4 font-medium">
                     {row.feature}
                   </th>

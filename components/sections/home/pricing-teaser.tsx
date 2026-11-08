@@ -13,6 +13,7 @@ export function PricingTeaser() {
         <SectionHeader
           tab={{ index: "06", label: "Pricing" }}
           title="Catering That Fits Your Event"
+          rays
           highlight="Fits"
           align="center"
           intro={<span className="font-semibold text-ink">Ready-to-Serve · Full Service · Custom Packages</span>}
@@ -20,7 +21,7 @@ export function PricingTeaser() {
 
         <Reveal className="relative mt-12">
           <DoodleDecoration kind="star" className="absolute -top-5 -left-3 h-10 w-10" motion="twinkle" />
-          <ul className="grid divide-y-[1.5px] divide-dashed divide-ink/25 rounded-[var(--radius-card)] border-[1.5px] border-ink bg-paper sm:grid-cols-3 sm:divide-x-[1.5px] sm:divide-y-0">
+          <ul className="grid divide-y-[1.5px] divide-dashed divide-linework/25 rounded-[var(--radius-card)] border-[1.5px] border-linework bg-paper sm:grid-cols-3 sm:divide-x-[1.5px] sm:divide-y-0">
             {pricingTeaser.map((item) => {
               const tier = findTier(item.tierId);
               return (

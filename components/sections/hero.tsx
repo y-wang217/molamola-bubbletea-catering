@@ -25,14 +25,14 @@ const notes: { text: string; at: [number, number]; className: string; flip?: boo
   { text: "fresh-brewed tea", at: [0.08, 0.2], className: "right-[calc(100%-1rem)] top-[50%]", arrow: "rotate-[-10deg]", icon: "drop" },
   { text: "lots of ice!", at: [0.3, 0.4], className: "left-[calc(100%-1.5rem)] top-[24%]", flip: true, arrow: "rotate-[-14deg]", icon: "sparkle" },
   { text: "brown sugar boba", at: [0.44, 0.54], className: "right-[calc(100%-2rem)] top-[80%]", arrow: "rotate-[-30deg]", icon: "boba" },
-  { text: "our little sticker", at: [0.58, 0.68], className: "left-[calc(100%-1rem)] top-[58%]", flip: true, arrow: "rotate-[6deg]", icon: "heart" },
+  { text: "our little sticker", at: [0.58, 0.68], className: "left-[calc(100%-1rem)] top-[44%]", flip: true, arrow: "rotate-[6deg]", icon: "heart" },
 ];
 
 const sparkles: { kind: DoodleKind; className: string; at: number }[] = [
   { kind: "star", className: "left-[2%] top-[14%] h-10 w-10", at: 0.7 },
   { kind: "heart", className: "right-[0%] top-[6%] h-9 w-9", at: 0.73 },
   { kind: "sparkle", className: "left-[4%] bottom-[22%] h-8 w-8", at: 0.76 },
-  { kind: "flower", className: "right-[-4%] top-[40%] h-8 w-8", at: 0.8 },
+  { kind: "flower", className: "left-[-8%] top-[30%] h-8 w-8", at: 0.8 },
 ];
 
 export function Hero() {
@@ -52,7 +52,7 @@ export function Hero() {
   const hintOpacity = useTransform(p, [0, 0.08], [1, 0]);
   const blobY = useTransform(p, [0, 1], [0, -40]);
   const cupScale = useTransform(p, [0, 1], [0.95, 1]);
-  const fishX = useTransform(p, [0.66, 0.8], [60, 0]);
+  const fishX = useTransform(p, [0.66, 0.8], [-50, 0]);
   const fishOpacity = useTransform(p, [0.66, 0.76], [0, 1]);
 
   return (
@@ -62,7 +62,7 @@ export function Hero() {
         <Container className="relative grid w-full items-center gap-5 pt-24 pb-6 sm:pt-28 lg:grid-cols-[1.08fr_0.92fr] lg:gap-10 lg:pt-16">
           {/* copy */}
           <div className="relative z-10">
-            <p className="inline-flex items-center gap-2 rounded-full border-[1.5px] border-ink/70 bg-paper px-3.5 py-1.5 text-[13px] font-semibold">
+            <p className="inline-flex items-center gap-2 rounded-full border-[1.5px] border-linework/70 bg-paper px-3.5 py-1.5 text-[13px] font-semibold">
               <DoodleDecoration kind="sparkle" className="h-4 w-4" />
               {hero.eyebrow}
             </p>
@@ -90,13 +90,14 @@ export function Hero() {
               <WatercolorBlob color={C.blue} spots={C.butter} className="h-full w-full opacity-70" seed={7} />
             </motion.div>
             <Bubbles />
+            {/* the fish peeks out from behind the cup once it's finished */}
+            <motion.div aria-hidden style={{ x: fishX, opacity: fishOpacity }} className="absolute -right-[22%] bottom-[4%] w-[46%]">
+              <Mascot className="h-auto w-full -scale-x-100 rotate-[8deg]" hat float title="" />
+            </motion.div>
             <motion.div style={{ scale: cupScale }} className="relative">
               <Cup layers={layers} liquid="#d9a77c" toppingKinds={["boba"]} title="A MolaMola milk tea filling up as you scroll" />
             </motion.div>
 
-            <motion.div aria-hidden style={{ x: fishX, opacity: fishOpacity }} className="absolute -right-[24%] -bottom-6 w-[40%]">
-              <Mascot className="h-auto w-full -scale-x-100 rotate-6" float title="" />
-            </motion.div>
 
             {sparkles.map((s, i) => (
               <Sparkle key={i} progress={p} at={s.at} kind={s.kind} className={s.className} />
@@ -127,7 +128,7 @@ function Word({ children, progress, range, underline }: { children: ReactNode; p
       <span className="relative z-10">{children}</span>
       {underline && (
         <svg viewBox="0 0 200 20" preserveAspectRatio="none" aria-hidden className="absolute -bottom-[0.06em] left-0 z-0 h-[0.32em] w-[96%]" overflow="visible">
-          <motion.path d="M3 13 C 40 5, 90 4, 130 8 S 185 14, 197 7" fill="none" stroke="#f39a5d" strokeWidth={7} strokeLinecap="round" vectorEffect="non-scaling-stroke" style={{ pathLength: draw }} />
+          <motion.path d="M3 13 C 40 5, 90 4, 130 8 S 185 14, 197 7" fill="none" stroke="#ffa75a" strokeWidth={7} strokeLinecap="round" vectorEffect="non-scaling-stroke" style={{ pathLength: draw }} />
         </svg>
       )}
     </motion.span>
@@ -184,7 +185,7 @@ function Bubbles() {
       ].map((b, i) => (
         <span
           key={i}
-          className="absolute bottom-0 rounded-full border-2 border-ink/70 motion-safe:animate-rise"
+          className="absolute bottom-0 rounded-full border-2 border-linework/70 motion-safe:animate-rise"
           style={{ width: b.size, height: b.size, left: b.left, animationDelay: `${b.delay}s` }}
         />
       ))}

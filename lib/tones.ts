@@ -18,9 +18,9 @@ export const toneSoftBg: Record<Tone, string> = {
 };
 
 export const toneHex: Record<Tone, string> = {
-  blue: "#bcd7ec",
-  pink: "#f7c8d2",
-  butter: "#fbe49c",
-  sage: "#c8d9b4",
-  cream: "#fffaf0",
+  blue: "#cfe8ff",
+  pink: "#ffd6e3",
+  butter: "#ffe7a3",
+  sage: "#d6e8c3",
+  cream: "#fffdf7",
 };

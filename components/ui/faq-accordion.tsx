@@ -9,7 +9,7 @@ export function FAQAccordion({ items }: { items: FaqItem[] }) {
   const baseId = useId();
 
   return (
-    <ul className="divide-y-[1.5px] divide-dashed divide-ink/20 border-y-[1.5px] border-dashed border-ink/20">
+    <ul className="divide-y-[1.5px] divide-dashed divide-linework/20 border-y-[1.5px] border-dashed border-linework/20">
       {items.map((item, i) => {
         const isOpen = open === i;
         const panelId = `${baseId}-panel-${i}`;
@@ -28,7 +28,7 @@ export function FAQAccordion({ items }: { items: FaqItem[] }) {
                 <span className="font-display text-lg font-bold tracking-[-0.01em] sm:text-xl">{item.q}</span>
                 <span
                   aria-hidden
-                  className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-[1.5px] border-ink text-xl transition duration-300 ${
+                  className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-[1.5px] border-linework text-xl transition duration-300 ${
                     isOpen ? "rotate-45 bg-butter" : "bg-paper group-hover:bg-blush-soft"
                   }`}
                 >

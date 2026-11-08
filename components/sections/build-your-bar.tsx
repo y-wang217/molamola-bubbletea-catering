@@ -2,19 +2,21 @@
 
 import { AnimatePresence, motion, useInView } from "motion/react";
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { colourSwatches, customizations, drinkCategories, toppings, type CustomizationId, type ToppingKind } from "@/content/drinks";
+import { colourSwatches, customizations, drinkCategories, flavours, toppings, type CustomizationId, type FlavourId, type ToppingKind } from "@/content/drinks";
 import { Cup, useCupLayers } from "@/components/doodles/cup";
-import { CustomIcon, DrinkIcon, ToppingIcon } from "@/components/doodles/ingredients";
+import { CustomIcon, DrinkIcon, FlavourIcon, ToppingIcon } from "@/components/doodles/ingredients";
 import { DoodleDecoration } from "@/components/doodles/doodle";
+import { Mascot } from "@/components/doodles/mascot";
 import { C } from "@/components/doodles/palette";
 import { CTAButton } from "@/components/ui/cta-button";
 import { WatercolorBlob } from "@/components/ui/decor";
 import { Container, Section } from "@/components/ui/layout";
 import { SectionHeader } from "@/components/ui/section-header";
 import { toneHex } from "@/lib/tones";
+import { mixHex } from "@/lib/color";
 
 const steps = [
-  { n: "01", short: "Drinks", title: "Pick Your Drinks", body: "Start with a base. Mix a few, or let us build a lineup for your crowd." },
+  { n: "01", short: "Drinks", title: "Pick Your Drinks", body: "Start with a base, then pick a flavour. Mix a few, or let us build a lineup for your crowd." },
   { n: "02", short: "Toppings", title: "Pick Your Toppings", body: "The chewy, creamy, fruity part. Choose a few for guests to mix and match." },
   { n: "03", short: "Details", title: "Make It Yours", body: "The details people remember. Watch the cup change as you pick." },
 ];
@@ -27,9 +29,23 @@ export function BuildYourBar({ tabIndex = "02" }: { tabIndex?: string }) {
   const [extras, setExtras] = useState<CustomizationId[]>(["sticker"]);
   const [stickerText, setStickerText] = useState("");
   const [drinkName, setDrinkName] = useState("");
-  const [swatch, setSwatch] = useState(colourSwatches[0]);
+  const [swatch, setSwatch] = useState(colourSwatches[0].hex);
+  const [flavourId, setFlavourId] = useState<FlavourId>("original");
+  // The little fish beside the cup hops and smiles whenever something is picked.
+  const [cheer, setCheer] = useState(0);
+  const [happy, setHappy] = useState(false);
+  const happyTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const react = () => {
+    setCheer((c) => c + 1);
+    setHappy(true);
+    clearTimeout(happyTimer.current);
+    happyTimer.current = setTimeout(() => setHappy(false), 1000);
+  };
 
   const drink = drinkCategories.find((d) => d.id === drinkId) ?? drinkCategories[0];
+  const flavour = flavours.find((f) => f.id === flavourId) ?? flavours[0];
+  const liquid = flavour.tint ? mixHex(drink.liquid, flavour.tint, 0.6) : drink.liquid;
+  const drinkLabel = flavour.tint ? `${flavour.name} ${drink.name}` : drink.name;
   const has = (id: CustomizationId) => extras.includes(id);
   const showSticker = active >= 2 && (has("sticker") || has("branding"));
   const layers = useCupLayers({
@@ -51,6 +67,7 @@ export function BuildYourBar({ tabIndex = "02" }: { tabIndex?: string }) {
         <SectionHeader
           tab={{ index: tabIndex, label: "Build your bar" }}
           title="Build Your Drink Bar"
+          rays
           highlight="Drink Bar"
           intro="Three steps from empty cup to your own MolaMola bar. Tap around: the cup follows along."
         />
@@ -58,11 +75,11 @@ export function BuildYourBar({ tabIndex = "02" }: { tabIndex?: string }) {
         <div className="mt-12 grid grid-cols-[minmax(0,1fr)] gap-8 lg:mt-16 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-16">
           {/* stage: sticky on top (mobile) / right (desktop) */}
           <div className="sticky top-[5.25rem] z-20 lg:order-2 lg:top-28 lg:self-start">
-            <div className="relative flex items-center gap-4 rounded-[var(--radius-card)] border-[1.5px] border-ink/15 bg-paper/95 p-3 backdrop-blur lg:flex-col lg:gap-6 lg:rounded-none lg:border-0 lg:bg-transparent lg:p-0 lg:backdrop-blur-none">
+            <div className="relative flex items-center gap-4 rounded-[var(--radius-card)] border-[1.5px] border-linework/15 bg-paper/95 p-3 backdrop-blur lg:flex-col lg:gap-6 lg:rounded-none lg:border-0 lg:bg-transparent lg:p-0 lg:backdrop-blur-none">
               <ol aria-label="Progress" className="order-2 flex flex-col gap-1 lg:order-1 lg:flex-row lg:gap-6">
                 {steps.map((s, i) => (
                   <li key={s.n} className={`flex items-center gap-2 text-[13px] font-semibold transition-opacity ${i <= active ? "opacity-100" : "opacity-35"}`}>
-                    <span className={`flex h-6 w-6 items-center justify-center rounded-full border-[1.5px] border-ink text-[11px] ${i <= active ? "bg-butter" : "bg-paper"}`}>{i + 1}</span>
+                    <span className={`flex h-6 w-6 items-center justify-center rounded-full border-[1.5px] border-linework text-[11px] ${i <= active ? "bg-butter" : "bg-paper"}`}>{i + 1}</span>
                     <span className="hidden sm:inline">{s.short}</span>
                   </li>
                 ))}
@@ -73,15 +90,26 @@ export function BuildYourBar({ tabIndex = "02" }: { tabIndex?: string }) {
                 <div className="relative">
                   <Cup
                     layers={layers}
-                    liquid={drink.liquid}
+                    liquid={liquid}
                     toppingKinds={picked}
                     label={label}
                     strawColor={colourOn ? swatch : C.pink}
                     accent={colourOn ? swatch : C.pinkDeep}
                     stickerMode={has("branding") ? "logo" : "mascot"}
-                    title={`Your ${drink.name} with ${picked.join(", ") || "no toppings"}`}
+                    title={`Your ${drinkLabel} with ${picked.join(", ") || "no toppings"}`}
                   />
                 </div>
+
+                <motion.div
+                  key={cheer}
+                  aria-hidden
+                  initial={false}
+                  animate={cheer ? { y: [0, -16, 0], rotate: [0, -6, 0] } : undefined}
+                  transition={{ duration: 0.5, ease: "easeOut" }}
+                  className="absolute -right-[34%] -bottom-[2%] hidden w-24 lg:block"
+                >
+                  <Mascot className="h-auto w-full" expression={happy ? "happy" : "default"} bubbles={false} title="" />
+                </motion.div>
 
                 {/* desktop-only extras that appear around the cup */}
                 <AnimatePresence>
@@ -91,7 +119,7 @@ export function BuildYourBar({ tabIndex = "02" }: { tabIndex?: string }) {
                       initial={{ opacity: 0, rotate: -30, y: -10 }}
                       animate={{ opacity: 1, rotate: -8, y: 0 }}
                       exit={{ opacity: 0 }}
-                      className="absolute top-[2%] -right-[30%] hidden origin-top-left rounded-lg border-[1.5px] border-ink bg-butter px-3 py-1.5 font-hand text-xl whitespace-nowrap shadow-[var(--shadow-sticker)] lg:block"
+                      className="absolute top-[2%] -right-[30%] hidden origin-top-left rounded-lg border-[1.5px] border-linework bg-butter px-3 py-1.5 font-hand text-xl whitespace-nowrap shadow-[var(--shadow-sticker)] lg:block"
                     >
                       {name}
                     </motion.div>
@@ -102,14 +130,14 @@ export function BuildYourBar({ tabIndex = "02" }: { tabIndex?: string }) {
                       initial={{ opacity: 0, x: -20, rotate: 0 }}
                       animate={{ opacity: 1, x: 0, rotate: -5 }}
                       exit={{ opacity: 0 }}
-                      className="absolute bottom-[2%] -left-[46%] hidden w-32 rounded-xl border-[1.5px] border-ink bg-paper p-3 shadow-[var(--shadow-soft)] lg:block"
+                      className="absolute bottom-[2%] -left-[46%] hidden w-32 rounded-xl border-[1.5px] border-linework bg-paper p-3 shadow-[var(--shadow-soft)] lg:block"
                     >
                       <p className="text-center font-hand text-lg leading-none text-tangerine-deep">menu</p>
-                      <p className="mt-2 text-[11px] leading-tight font-bold">{has("names") ? name : drink.name}</p>
+                      <p className="mt-2 text-[11px] leading-tight font-bold">{has("names") ? name : drinkLabel}</p>
                       <p className="text-[10px] leading-tight text-cocoa">{picked.map((p) => toppings.find((t) => t.id === p)?.name).join(" · ") || "no toppings"}</p>
                       <div className="mt-2 space-y-1">
-                        <span className="block h-[2px] w-full rounded bg-ink/15" />
-                        <span className="block h-[2px] w-2/3 rounded bg-ink/15" />
+                        <span className="block h-[2px] w-full rounded bg-linework/15" />
+                        <span className="block h-[2px] w-2/3 rounded bg-linework/15" />
                       </div>
                     </motion.div>
                   )}
@@ -117,7 +145,7 @@ export function BuildYourBar({ tabIndex = "02" }: { tabIndex?: string }) {
                     <motion.div key="theme" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="pointer-events-none absolute inset-0 hidden lg:block">
                       <DoodleDecoration kind="star" className="absolute -top-6 -left-8 h-9 w-9" motion="twinkle" />
                       <DoodleDecoration kind="heart" className="absolute top-1/3 -right-12 h-8 w-8" motion="bob" />
-                      <DoodleDecoration kind="flower" className="absolute -bottom-2 -right-6 h-8 w-8" motion="float" />
+                      <DoodleDecoration kind="flower" className="absolute -top-10 right-6 h-8 w-8" motion="float" />
                       <DoodleDecoration kind="sparkle" className="absolute top-1/2 -left-10 h-7 w-7" motion="twinkle" delay={1} />
                     </motion.div>
                   )}
@@ -125,7 +153,7 @@ export function BuildYourBar({ tabIndex = "02" }: { tabIndex?: string }) {
               </div>
 
               <p aria-live="polite" className="order-3 min-w-0 flex-1 font-hand text-[1.3rem] leading-tight lg:text-center lg:text-[1.6rem]">
-                {active >= 2 && has("names") ? `"${name}"` : drink.name}
+                {active >= 2 && has("names") ? `"${name}"` : drinkLabel}
                 {picked.length > 0 && active >= 1 && <> + {picked.map((p) => toppings.find((t) => t.id === p)?.name.toLowerCase()).join(", ")}</>}
               </p>
             </div>
@@ -136,17 +164,36 @@ export function BuildYourBar({ tabIndex = "02" }: { tabIndex?: string }) {
             <Step index={0} onActive={setActive} {...steps[0]}>
               <TokenRow label="Drinks" radio>
                 {drinkCategories.map((d) => (
-                  <Token key={d.id} label={d.name} sub={d.example} selected={d.id === drinkId} tone={toneHex[d.tone]} onClick={() => setDrinkId(d.id)} radio>
+                  <Token key={d.id} label={d.name} sub={d.example} selected={d.id === drinkId} tone={toneHex[d.tone]} onClick={() => (setDrinkId(d.id), react())} radio>
                     <DrinkIcon drink={d} className="h-14 w-11" />
                   </Token>
                 ))}
               </TokenRow>
+              <p className="mt-8 font-hand text-2xl">choose a flavour →</p>
+              <div role="radiogroup" aria-label="Flavour" className="no-scrollbar -mx-5 mt-3 flex gap-2 overflow-x-auto px-5 pb-2 sm:mx-0 sm:flex-wrap sm:px-0">
+                {flavours.map((f) => (
+                  <button
+                    key={f.id}
+                    type="button"
+                    role="radio"
+                    aria-checked={flavourId === f.id}
+                    onClick={() => (setFlavourId(f.id), react())}
+                    className={`flex min-h-12 shrink-0 items-center gap-2 rounded-2xl border-[1.5px] py-1.5 pr-4 pl-2 text-[14px] font-semibold transition ${
+                      flavourId === f.id ? "-rotate-1 border-linework bg-blush shadow-[var(--shadow-sticker)]" : "border-linework/20 bg-paper hover:border-linework/60"
+                    }`}
+                  >
+                    <FlavourIcon id={f.id} className="h-8 w-8" />
+                    {flavourId === f.id && <span aria-hidden>✓</span>}
+                    {f.name}
+                  </button>
+                ))}
+              </div>
             </Step>
 
             <Step index={1} onActive={setActive} {...steps[1]}>
               <TokenRow label="Toppings">
                 {toppings.map((t) => (
-                  <Token key={t.id} label={t.name} sub={t.note} selected={picked.includes(t.id)} tone={C.pink} onClick={() => setPicked(toggle(picked, t.id))}>
+                  <Token key={t.id} label={t.name} sub={t.note} selected={picked.includes(t.id)} tone={C.pink} onClick={() => (setPicked(toggle(picked, t.id)), react())}>
                     <ToppingIcon kind={t.id} className="h-12 w-12" />
                   </Token>
                 ))}
@@ -156,7 +203,7 @@ export function BuildYourBar({ tabIndex = "02" }: { tabIndex?: string }) {
             <Step index={2} onActive={setActive} {...steps[2]}>
               <TokenRow label="Custom details">
                 {customizations.map((c) => (
-                  <Token key={c.id} label={c.name} sub={c.note} selected={has(c.id)} tone={C.butter} onClick={() => setExtras(toggle(extras, c.id))}>
+                  <Token key={c.id} label={c.name} sub={c.note} selected={has(c.id)} tone={C.butter} onClick={() => (setExtras(toggle(extras, c.id)), react())}>
                     <CustomIcon id={c.id} className="h-12 w-12" accent={colourOn ? swatch : C.pinkDeep} />
                   </Token>
                 ))}
@@ -178,14 +225,15 @@ export function BuildYourBar({ tabIndex = "02" }: { tabIndex?: string }) {
                     <div role="radiogroup" aria-label="Event colour" className="mt-2 flex gap-3">
                       {colourSwatches.map((c) => (
                         <button
-                          key={c}
+                          key={c.hex}
                           type="button"
                           role="radio"
-                          aria-checked={swatch === c}
-                          aria-label={`Colour ${c}`}
-                          onClick={() => setSwatch(c)}
-                          className={`h-10 w-10 rounded-full border-[1.5px] border-ink transition-transform ${swatch === c ? "scale-110 shadow-[var(--shadow-sticker)]" : "hover:scale-105"}`}
-                          style={{ backgroundColor: c }}
+                          aria-checked={swatch === c.hex}
+                          aria-label={c.name}
+                          title={c.name}
+                          onClick={() => setSwatch(c.hex)}
+                          className={`h-10 w-10 rounded-full border-[1.5px] border-linework transition-transform ${swatch === c.hex ? "scale-110 shadow-[var(--shadow-sticker)]" : "hover:scale-105"}`}
+                          style={{ backgroundColor: c.hex }}
                         />
                       ))}
                     </div>
@@ -206,7 +254,7 @@ export function BuildYourBar({ tabIndex = "02" }: { tabIndex?: string }) {
   );
 }
 
-const inputCls = "mt-2 w-full min-h-12 rounded-2xl border-[1.5px] border-ink/40 bg-paper px-4 py-3 text-[16px] outline-none focus:border-ink focus:bg-white";
+const inputCls = "mt-2 w-full min-h-12 rounded-2xl border-[1.5px] border-linework/40 bg-paper px-4 py-3 text-[16px] outline-none focus:border-linework focus:bg-white";
 
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
@@ -268,13 +316,13 @@ function Token({
     >
       <span
         className={`relative flex h-[4.75rem] w-[4.75rem] items-center justify-center rounded-full border-[1.5px] transition duration-200 ${
-          selected ? "-rotate-3 border-ink shadow-[var(--shadow-sticker)]" : "border-ink/15 bg-paper group-hover:-translate-y-0.5 group-hover:border-ink/50"
+          selected ? "-rotate-3 border-linework shadow-[var(--shadow-sticker)]" : "border-linework/15 bg-paper group-hover:-translate-y-0.5 group-hover:border-linework/50"
         }`}
         style={selected ? { backgroundColor: tone } : undefined}
       >
         <span className="transition-transform duration-300 group-hover:scale-110">{children}</span>
         {selected && (
-          <span aria-hidden className="absolute -top-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full border-[1.5px] border-ink bg-paper text-[12px] font-bold">
+          <span aria-hidden className="absolute -top-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full border-[1.5px] border-linework bg-paper text-[12px] font-bold">
             ✓
           </span>
         )}

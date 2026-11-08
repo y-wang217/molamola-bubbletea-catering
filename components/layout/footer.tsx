@@ -28,7 +28,7 @@ const socialIcon: Record<SocialKind, React.ReactNode> = {
 
 export function Footer() {
   return (
-    <footer className="relative mt-10 overflow-hidden border-t-[1.5px] border-ink bg-powder">
+    <footer className="relative mt-10 overflow-hidden border-t-[1.5px] border-linework bg-powder">
       <DoodleDecoration kind="boba" className="absolute top-10 right-[8%] h-12 w-12 opacity-80" motion="bob" />
       <DoodleDecoration kind="star" className="absolute bottom-24 left-[46%] hidden h-8 w-8 md:block" motion="twinkle" />
       <Container className="relative grid gap-12 py-16 md:grid-cols-[1.4fr_1fr_1fr] md:py-20">
@@ -58,7 +58,7 @@ export function Footer() {
             {socials.map((s) => (
               <li key={s.kind}>
                 <a href={s.href} className="group inline-flex items-center gap-3 text-[16px] font-semibold">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-full border-[1.5px] border-ink bg-paper transition-transform group-hover:-rotate-12">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-full border-[1.5px] border-linework bg-paper transition-transform group-hover:-rotate-12">
                     {socialIcon[s.kind]}
                   </span>
                   <span>
@@ -71,7 +71,7 @@ export function Footer() {
           </ul>
         </div>
       </Container>
-      <div className="border-t-[1.5px] border-dashed border-ink/25">
+      <div className="border-t-[1.5px] border-dashed border-linework/25">
         <Container className="flex flex-col items-center justify-between gap-2 py-5 text-[13px] text-ink/60 sm:flex-row">
           <p>© {brand.name}. Made with lots of ice.</p>
           <p className="font-hand text-lg">see you at the drink bar ✶</p>

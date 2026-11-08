@@ -9,7 +9,7 @@ import { Mascot } from "@/components/doodles/mascot";
 import { DoodleDecoration } from "@/components/doodles/doodle";
 
 const input =
-  "mt-2 w-full min-h-12 rounded-2xl border-[1.5px] border-ink/25 bg-paper px-4 py-3 text-[16px] outline-none transition placeholder:text-cocoa/60 hover:border-ink/50 focus:border-ink focus:bg-white aria-[invalid=true]:border-tangerine-deep";
+  "mt-2 w-full min-h-12 rounded-2xl border-[1.5px] border-linework/25 bg-paper px-4 py-3 text-[16px] outline-none transition placeholder:text-cocoa/60 hover:border-linework/50 focus:border-linework focus:bg-white aria-[invalid=true]:border-tangerine-deep";
 
 const initialValues = (): InquiryValues => Object.fromEntries(inquiryFields.map((f) => [f.name, f.type === "chips" ? [] : ""]));
 
@@ -112,7 +112,7 @@ export function ContactForm() {
                       if (!multi) setErrors((e) => ({ ...e, [f.name]: undefined }));
                     }}
                     className={`min-h-12 rounded-2xl border-[1.5px] px-4 py-3 text-[15px] font-semibold transition duration-200 ${
-                      on ? "border-ink bg-blush shadow-[var(--shadow-sticker)]" : "border-ink/25 bg-paper hover:border-ink/60"
+                      on ? "border-linework bg-blush shadow-[var(--shadow-sticker)]" : "border-linework/25 bg-paper hover:border-linework/60"
                     } ${multi ? "" : "w-full text-left sm:text-center"}`}
                   >
                     {on && <span aria-hidden>✓ </span>}

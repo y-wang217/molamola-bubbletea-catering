@@ -35,7 +35,7 @@ export function Nav() {
 
   return (
     <header className="sticky top-0 z-50 px-3 pt-3 sm:px-5">
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 rounded-full border-[1.5px] border-ink bg-paper/90 py-1.5 pr-2 pl-4 backdrop-blur-md sm:pl-6">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 rounded-full border-[1.5px] border-linework bg-paper/90 py-1.5 pr-2 pl-4 backdrop-blur-md sm:pl-6">
         <Logo className="h-10 w-auto sm:h-11" />
 
         <nav aria-label="Main" className="hidden xl:block">
@@ -67,7 +67,7 @@ export function Nav() {
             onClick={() => setOpen(true)}
             aria-expanded={open}
             aria-controls="mobile-menu"
-            className="flex h-11 items-center gap-2 rounded-full border-[1.5px] border-ink bg-paper px-4 text-[14.5px] font-semibold xl:hidden"
+            className="flex h-11 items-center gap-2 rounded-full border-[1.5px] border-linework bg-paper px-4 text-[14.5px] font-semibold xl:hidden"
           >
             <span aria-hidden className="flex flex-col gap-1">
               <span className="block h-[2px] w-4 rounded bg-ink" />
@@ -93,7 +93,7 @@ export function Nav() {
           >
             <div className="flex items-center justify-between">
               <Logo className="h-10 w-auto" />
-              <button type="button" onClick={() => setOpen(false)} className="h-11 rounded-full border-[1.5px] border-ink bg-paper px-4 text-[14.5px] font-semibold">
+              <button type="button" onClick={() => setOpen(false)} className="h-11 rounded-full border-[1.5px] border-linework bg-paper px-4 text-[14.5px] font-semibold">
                 Close ✕
               </button>
             </div>

@@ -5,7 +5,23 @@ import { C } from "./palette";
  * kissy "ε" mouth, little wing fins, one tall dorsal fin, scalloped tail and bubbles.
  * Coordinates live in a 700×730 space so the line weight matches the logo.
  */
-export function MascotArt({ tone = "color", bubbles = true }: { tone?: "color" | "line"; bubbles?: boolean }) {
+export type MascotExpression = "default" | "wink" | "happy";
+
+/**
+ * Character model. Variations (chef hat, wink, happy eyes) are small, on-model tweaks.
+ * Use the default face unless a scene genuinely benefits from an expression.
+ */
+export function MascotArt({
+  tone = "color",
+  bubbles = true,
+  hat = false,
+  expression = "default",
+}: {
+  tone?: "color" | "line";
+  bubbles?: boolean;
+  hat?: boolean;
+  expression?: MascotExpression;
+}) {
   const body = tone === "color" ? C.mascotBody : "#fff";
   const fin = tone === "color" ? C.mascotFin : "#fff";
   const wing = tone === "color" ? C.mascotWing : "#fff";
@@ -29,13 +45,28 @@ export function MascotArt({ tone = "color", bubbles = true }: { tone?: "color" |
         d="M380 398c2-36 32-72 66-75 25-1 30 22 10 33 22 4 20 30-3 30 18 10 10 33-14 27-8 20-33 28-48 18"
       />
       {/* eyes */}
-      <circle cx="172" cy="318" r="27" fill={C.ink} stroke="none" />
-      <circle cx="292" cy="326" r="27" fill={C.ink} stroke="none" />
+      {expression === "happy" ? (
+        <path fill="none" strokeWidth={14} d="M148 328q24-28 48 0" />
+      ) : (
+        <circle cx="172" cy="318" r="27" fill={C.ink} stroke="none" />
+      )}
+      {expression === "default" ? (
+        <circle cx="292" cy="326" r="27" fill={C.ink} stroke="none" />
+      ) : (
+        <path fill="none" strokeWidth={14} d="M268 336q24-28 48 0" />
+      )}
       {/* blush */}
       <ellipse cx="132" cy="368" rx="16" ry="8" fill={tone === "color" ? C.pink : "#fff"} strokeWidth={6} />
       <ellipse cx="334" cy="374" rx="16" ry="8" fill={tone === "color" ? C.pink : "#fff"} strokeWidth={6} />
       {/* kissy mouth */}
       <path fill="none" strokeWidth={11} d="M224 371c-17 0-17 20-4 21-15 2-13 26 7 22" />
+      {hat && (
+        <g transform="translate(262 180) rotate(-8) scale(1.22) translate(-262 -180)">
+          <path fill="#fffdf6" d="M196 158c-46-4-48-74 6-76 0-50 74-58 86-16 26-38 98-22 84 32 32 18 14 64-40 58Z" />
+          <path fill="none" strokeWidth={10} d="M232 152l3-32M266 150v-36M300 152l-3-32" />
+          <rect x="190" y="146" width="146" height="48" rx="16" fill="#fffdf6" />
+        </g>
+      )}
       {bubbles && (
         <g fill="none" strokeWidth={8}>
           <circle cx="104" cy="208" r="13" />
@@ -51,24 +82,28 @@ export function Mascot({
   float = false,
   tone = "color",
   bubbles = true,
+  hat = false,
+  expression = "default",
   title = "The MolaMola fish",
 }: {
   className?: string;
   float?: boolean;
   tone?: "color" | "line";
   bubbles?: boolean;
+  hat?: boolean;
+  expression?: MascotExpression;
   title?: string;
 }) {
   return (
     <svg
-      viewBox="20 10 680 700"
+      viewBox={hat ? "20 -20 680 730" : "20 10 680 700"}
       role={title ? "img" : undefined}
       aria-hidden={title ? undefined : true}
       className={`${float ? "animate-float" : ""} ${className}`}
       overflow="visible"
     >
       {title && <title>{title}</title>}
-      <MascotArt tone={tone} bubbles={bubbles} />
+      <MascotArt tone={tone} bubbles={bubbles} hat={hat} expression={expression} />
     </svg>
   );
 }

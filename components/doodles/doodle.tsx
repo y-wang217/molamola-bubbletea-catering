@@ -12,7 +12,9 @@ export type DoodleKind =
   | "lemon"
   | "flower"
   | "cloud"
-  | "drop";
+  | "drop"
+  | "rays"
+  | "crown";
 
 type Props = {
   kind: DoodleKind;
@@ -130,6 +132,16 @@ function Shape({ kind, color }: { kind: DoodleKind; color?: string }) {
           d="M9 30c-4.4 0-6.6-5.6-3-8.4-.8-5 4.8-8 8.6-5.2 1.6-5.6 9.6-6.4 12-.6 4.4-1.4 8.6 2.2 7.6 6.6 3.6 1.6 2.8 7.6-1.6 7.6H9Z"
         />
       );
+    case "rays":
+      return (
+        <g stroke={color ?? C.butterDeep} strokeWidth={4.5} strokeLinecap="round" fill="none">
+          <path d="M8 22l-5-6" />
+          <path d="M18 14l-1-9" />
+          <path d="M29 16l5-7" />
+        </g>
+      );
+    case "crown":
+      return <path {...stroke} fill={color ?? C.butter} d="M6 31 4 12l9 8 7-12 7 12 9-8-2 19Z" />;
     case "drop":
       return <path {...stroke} fill={color ?? C.blue} d="M20 4c6 8.4 11 14.4 11 20.4a11 11 0 0 1-22 0C9 18.4 14 12.4 20 4Z" />;
   }

@@ -76,7 +76,7 @@ export function PricingAddOns() {
                     <h3 className="font-hand text-[1.7rem] leading-none">{g.title}</h3>
                     <ul className="mt-4">
                       {g.items.map((a) => (
-                        <li key={a.label} className="border-b-[1.5px] border-dashed border-ink/20 py-3 text-[15px] last:border-0">
+                        <li key={a.label} className="border-b-[1.5px] border-dashed border-linework/20 py-3 text-[15px] last:border-0">
                           <span className="block">{a.label}</span>
                           <span className="font-semibold">{a.price}</span>
                         </li>
@@ -98,9 +98,9 @@ export function PricingAddOns() {
 
 function QuoteNote() {
   return (
-    <div className="relative mt-6 rotate-[1.5deg] rounded-[1.25rem] border-[1.5px] border-ink bg-butter p-7 shadow-[var(--shadow-sticker)] lg:mt-0">
+    <div className="relative mt-6 rotate-[1.5deg] rounded-[1.25rem] border-[1.5px] border-linework bg-butter p-7 shadow-[var(--shadow-sticker)] lg:mt-0">
       <span aria-hidden className="tape absolute -top-3 left-8 h-6 w-20 -rotate-6 bg-blush/90" />
-      <Mascot className="absolute -top-12 -right-2 h-20 w-20 rotate-6 sm:-right-6" float title="" />
+      <Mascot className="absolute -top-14 -right-2 h-20 w-20 rotate-6 sm:-right-6" hat float title="" />
       <p className="font-hand text-[1.9rem] leading-tight">{pricingNote}</p>
       <p className="mt-3 text-[15px] text-ink/75">Tell us a bit about your event and we&apos;ll send a quote that fits.</p>
       <CTAButton href="/contact" className="mt-6" arrow>

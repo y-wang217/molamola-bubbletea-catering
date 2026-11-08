@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { HandUnderline, Reveal } from "./motion";
+import { DoodleDecoration } from "@/components/doodles/doodle";
 
 type Props = {
   /** Small eyebrow, e.g. { index: "02", label: "Catering" } */
@@ -11,11 +12,13 @@ type Props = {
   align?: "left" | "center";
   as?: "h1" | "h2";
   size?: "md" | "lg";
+  /** Little hand-drawn emphasis rays beside the title (use on a few key headings). */
+  rays?: boolean;
   className?: string;
 };
 
 /** Eyebrow → large title → short supporting line. */
-export function SectionHeader({ tab, title, highlight, intro, align = "left", as: Heading = "h2", size = "md", className = "" }: Props) {
+export function SectionHeader({ tab, title, highlight, intro, align = "left", as: Heading = "h2", size = "md", rays = false, className = "" }: Props) {
   const centered = align === "center";
   let titleNode: ReactNode = title;
   if (highlight && title.includes(highlight)) {
@@ -46,6 +49,7 @@ export function SectionHeader({ tab, title, highlight, intro, align = "left", as
         }`}
       >
         {titleNode}
+        {rays && <DoodleDecoration kind="rays" className="ml-1 inline-block h-[0.55em] w-[0.55em] -translate-y-[0.7em]" />}
       </Heading>
       {intro && (
         <div className={`mt-5 text-[17px] leading-relaxed text-cocoa text-pretty sm:text-lg ${centered ? "mx-auto max-w-xl" : "max-w-xl"}`}>{intro}</div>

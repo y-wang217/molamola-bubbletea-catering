@@ -4,8 +4,8 @@ import type { ReactNode } from "react";
 type Variant = "primary" | "secondary" | "quiet";
 
 const styles: Record<Variant, string> = {
-  primary: "bg-tangerine text-ink border-ink shadow-[var(--shadow-sticker)] hover:shadow-[var(--shadow-sticker-lg)] hover:-translate-x-0.5 hover:-translate-y-0.5",
-  secondary: "bg-paper text-ink border-ink shadow-[var(--shadow-sticker)] hover:shadow-[var(--shadow-sticker-lg)] hover:-translate-x-0.5 hover:-translate-y-0.5",
+  primary: "bg-tangerine text-ink border-linework shadow-[var(--shadow-sticker)] hover:shadow-[var(--shadow-sticker-lg)] hover:-translate-x-0.5 hover:-translate-y-0.5",
+  secondary: "bg-paper text-ink border-linework shadow-[var(--shadow-sticker)] hover:shadow-[var(--shadow-sticker-lg)] hover:-translate-x-0.5 hover:-translate-y-0.5",
   quiet: "border-transparent text-ink underline-offset-4 hover:underline",
 };
 
